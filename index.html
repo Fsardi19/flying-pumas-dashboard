@@ -198,31 +198,34 @@
             padding: 1.5rem;
         }
 
-        /* Grid System */
+        /* Grids */
         .grid {
             display: grid;
             gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .grid-2 { grid-template-columns: repeat(2, 1fr); }
         .grid-3 { grid-template-columns: repeat(3, 1fr); }
         .grid-4 { grid-template-columns: repeat(4, 1fr); }
 
-        /* Statistics Cards */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* Stats Cards */
         .stat-card {
             background: var(--fp-white);
             border-radius: var(--fp-radius-lg);
             padding: 1.5rem;
-            text-align: center;
             box-shadow: var(--fp-shadow-md);
-            border: 1px solid var(--fp-neutral-200);
         }
 
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
             color: var(--fp-primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
@@ -233,117 +236,106 @@
 
         .stat-change {
             font-size: 0.75rem;
+            font-weight: 500;
             padding: 0.25rem 0.5rem;
             border-radius: var(--fp-radius-sm);
-            font-weight: 500;
         }
 
         .stat-change.positive {
-            background: #d1f2eb;
-            color: #0c5149;
+            background: rgba(16, 185, 129, 0.1);
+            color: #047857;
         }
 
         .stat-change.negative {
-            background: #fadbd8;
-            color: #922b21;
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
         }
 
-        .stat-change.neutral {
-            background: var(--fp-neutral-100);
-            color: var(--fp-neutral-700);
-        }
-
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0;
-        }
-
-        .table th,
-        .table td {
-            text-align: left;
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 350px;
             padding: 1rem;
-            border-bottom: 1px solid var(--fp-neutral-200);
         }
 
-        .table th {
-            background: var(--fp-neutral-50);
-            font-weight: 600;
-            color: var(--fp-neutral-900);
-            font-size: 0.875rem;
+        /* CSS-based Chart Visualizations */
+        .css-pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
         }
 
-        .table td {
-            font-size: 0.875rem;
-            color: var(--fp-neutral-700);
+        .css-bar-chart {
+            display: flex;
+            align-items: end;
+            height: 250px;
+            gap: 1rem;
+            padding: 1rem;
         }
 
-        .table tr:hover {
-            background: var(--fp-neutral-50);
-        }
-
-        /* Badges */
-        .badge {
-            padding: 0.25rem 0.5rem;
+        .css-bar {
+            flex: 1;
+            background: var(--fp-accent);
             border-radius: var(--fp-radius-sm);
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            padding: 0.5rem;
+            color: white;
+            font-weight: 600;
             font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
         }
 
-        .badge-success {
-            background: #d1f2eb;
-            color: #0c5149;
-        }
-
-        .badge-warning {
-            background: #fef5e7;
-            color: #b7791f;
-        }
-
-        .badge-info {
-            background: #e1f5fe;
-            color: #01579b;
-        }
-
-        .badge-danger {
-            background: #fadbd8;
-            color: #922b21;
+        .css-line-chart {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(to right, transparent 0%, rgba(109, 179, 63, 0.1) 50%, rgba(109, 179, 63, 0.3) 100%);
+            border-radius: var(--fp-radius-sm);
         }
 
         /* Controls */
         .controls {
             display: flex;
+            flex-wrap: wrap;
             gap: 1rem;
             margin-bottom: 2rem;
-            align-items: end;
-            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--fp-white);
+            border-radius: var(--fp-radius-lg);
+            box-shadow: var(--fp-shadow-sm);
         }
 
         .control-group {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            min-width: 140px;
         }
 
         .control-label {
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
             color: var(--fp-neutral-700);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
         }
 
         .control-input {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: 1px solid var(--fp-neutral-300);
             border-radius: var(--fp-radius-sm);
             font-size: 0.875rem;
+            font-family: inherit;
             background: var(--fp-white);
+            transition: border-color 0.2s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: var(--fp-accent);
+            box-shadow: 0 0 0 3px rgba(109, 179, 63, 0.1);
         }
 
         /* Buttons */
@@ -356,7 +348,9 @@
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
@@ -365,7 +359,8 @@
         }
 
         .btn-primary:hover {
-            background: var(--fp-secondary);
+            background: #234110;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -377,160 +372,77 @@
             background: var(--fp-neutral-200);
         }
 
-        /* Chart Containers */
-        .chart-container {
-            padding: 1.5rem;
-            min-height: 300px;
-            position: relative;
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
         }
 
-        /* Custom Charts */
-        .custom-chart {
-            height: 250px;
-            display: flex;
-            align-items: end;
-            gap: 1rem;
-            padding: 1rem 0;
-            position: relative;
-        }
-
-        .chart-bar {
-            flex: 1;
-            background: var(--fp-accent);
-            border-radius: var(--fp-radius-sm) var(--fp-radius-sm) 0 0;
-            min-height: 20px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .chart-bar:hover {
-            background: var(--fp-primary);
-        }
-
-        .chart-bar-label {
-            position: absolute;
-            bottom: -2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            color: var(--fp-neutral-600);
-            text-align: center;
+        .table {
             width: 100%;
-        }
-
-        .chart-bar-value {
-            position: absolute;
-            top: -2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--fp-neutral-700);
-            white-space: nowrap;
-        }
-
-        /* Pie Chart */
-        .pie-chart {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 2rem auto;
-            position: relative;
-        }
-
-        .pie-legend {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            border-collapse: collapse;
             font-size: 0.875rem;
         }
 
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--fp-neutral-200);
         }
+
+        .table th {
+            font-weight: 600;
+            color: var(--fp-neutral-700);
+            background: var(--fp-neutral-50);
+        }
+
+        .table tr:hover {
+            background: var(--fp-neutral-50);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: var(--fp-radius-sm);
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: #047857; }
+        .badge-warning { background: rgba(251, 191, 36, 0.1); color: #92400e; }
+        .badge-info { background: rgba(59, 130, 246, 0.1); color: #1e40af; }
+        .badge-neutral { background: var(--fp-neutral-100); color: var(--fp-neutral-600); }
 
         /* Insights */
         .insight-card {
             border-left: 4px solid var(--fp-accent);
         }
 
-        .insight-card .card-content p {
-            margin-bottom: 1rem;
+        .opportunity-card {
+            border-left: 4px solid #f59e0b;
         }
 
-        .insight-card .card-content p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Progress Bars */
-        .progress-container {
-            margin: 1rem 0;
-        }
-
-        .progress-label {
-            font-size: 0.875rem;
-            color: var(--fp-neutral-600);
-            margin-bottom: 0.5rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--fp-neutral-200);
-            border-radius: var(--fp-radius-sm);
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--fp-accent);
-            transition: width 0.3s ease;
+        .critical-card {
+            border-left: 4px solid #ef4444;
         }
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .grid-4 { grid-template-columns: repeat(2, 1fr); }
-            .grid-3 { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 768px) {
-            .nav-list {
-                flex-direction: column;
-                gap: 0;
+            .header-content,
+            .main-content {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
-            .nav-link {
-                padding: 0.75rem 0;
-                border-bottom: none;
-                border-left: 3px solid transparent;
+            .nav-tabs {
+                padding: 0 1rem;
             }
-
-            .nav-link:hover,
-            .nav-link.active {
-                border-left-color: var(--fp-accent);
-                border-bottom-color: transparent;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .grid-2 { grid-template-columns: 1fr; }
-            .grid-3 { grid-template-columns: 1fr; }
-            .grid-4 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -613,19 +525,18 @@
                         <p class="card-subtitle">Rebalanceo requerido para alcanzar $34.50/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="pie-chart" style="background: conic-gradient(var(--fp-primary) 0deg 120deg, var(--fp-accent) 120deg 160deg, var(--fp-secondary) 160deg 200deg, var(--fp-neutral-300) 200deg 360deg);"></div>
-                        <div class="pie-legend">
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-primary);"></div>
-                                <span>FP Actual: 33.4%</span>
+                        <div class="css-bar-chart">
+                            <div class="css-bar" style="height: 33.4%; background: #2d5016;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">FP 33.4%</span>
                             </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-accent);"></div>
-                                <span>FP Óptimo: 44.5%</span>
+                            <div class="css-bar" style="height: 66.6%; background: #6db33f;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">CCD 66.6%</span>
                             </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-secondary);"></div>
-                                <span>CCD: 66.6% → 55.5%</span>
+                            <div class="css-bar" style="height: 44.5%; background: #2d5016;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">FP Ópt 44.5%</span>
+                            </div>
+                            <div class="css-bar" style="height: 55.5%; background: #6db33f;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">CCD Ópt 55.5%</span>
                             </div>
                         </div>
                     </div>
@@ -637,23 +548,14 @@
                         <p class="card-subtitle">Proyección hacia meta $34.50/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="custom-chart">
-                            <div class="chart-bar" style="height: 20%;">
-                                <div class="chart-bar-value">$7.99</div>
-                                <div class="chart-bar-label">CCD Actual</div>
-                            </div>
-                            <div class="chart-bar" style="height: 33%;">
-                                <div class="chart-bar-value">$11.33</div>
-                                <div class="chart-bar-label">Promedio Global</div>
-                            </div>
-                            <div class="chart-bar" style="height: 100%;">
-                                <div class="chart-bar-value">$34.50</div>
-                                <div class="chart-bar-label">Meta 2026</div>
-                            </div>
-                            <div class="chart-bar" style="height: 195%;">
-                                <div class="chart-bar-value">$67.58</div>
-                                <div class="chart-bar-label">FP Actual</div>
-                            </div>
+                        <div class="css-line-chart" style="background: linear-gradient(to right,
+                            rgba(109, 179, 63, 0.1) 0%,
+                            rgba(109, 179, 63, 0.2) 25%,
+                            rgba(109, 179, 63, 0.3) 50%,
+                            rgba(109, 179, 63, 0.5) 75%,
+                            rgba(109, 179, 63, 0.8) 100%);">
+                            <div style="position: absolute; bottom: 10px; left: 10px; font-weight: 600;">$8.00 (2022)</div>
+                            <div style="position: absolute; top: 10px; right: 10px; font-weight: 600; color: var(--fp-primary);">$34.50 (Meta 2026)</div>
                         </div>
                     </div>
                 </div>
@@ -708,23 +610,13 @@
                         <p class="card-subtitle">Precio promedio: $67.58/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="custom-chart">
-                            <div class="chart-bar" style="height: 15%;">
-                                <div class="chart-bar-value">$4.7K</div>
-                                <div class="chart-bar-label">Iconic</div>
-                            </div>
-                            <div class="chart-bar" style="height: 70%;">
-                                <div class="chart-bar-value">$169K</div>
-                                <div class="chart-bar-label">Washed</div>
-                            </div>
-                            <div class="chart-bar" style="height: 100%;">
-                                <div class="chart-bar-value">$244K</div>
-                                <div class="chart-bar-label">Natural</div>
-                            </div>
-                            <div class="chart-bar" style="height: 25%;">
-                                <div class="chart-bar-value">$11K</div>
-                                <div class="chart-bar-label">Dynamic</div>
-                            </div>
+                        <div class="css-pie-chart" style="background: conic-gradient(
+                            #1a2f0d 0deg 8deg,
+                            #2d5016 8deg 120deg,
+                            #4a7c59 120deg 280deg,
+                            #8bc34a 280deg 360deg
+                        );">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">FP Series</div>
                         </div>
                     </div>
                 </div>
@@ -735,23 +627,13 @@
                         <p class="card-subtitle">Precio promedio: $7.99/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="custom-chart">
-                            <div class="chart-bar" style="height: 30%;">
-                                <div class="chart-bar-value">$73K</div>
-                                <div class="chart-bar-label">Splash</div>
-                            </div>
-                            <div class="chart-bar" style="height: 85%;">
-                                <div class="chart-bar-value">$208K</div>
-                                <div class="chart-bar-label">Dynamic</div>
-                            </div>
-                            <div class="chart-bar" style="height: 100%;">
-                                <div class="chart-bar-value">$246K</div>
-                                <div class="chart-bar-label">Intrinsic</div>
-                            </div>
-                            <div class="chart-bar" style="height: 210%;">
-                                <div class="chart-bar-value">$521K</div>
-                                <div class="chart-bar-label">Otros</div>
-                            </div>
+                        <div class="css-pie-chart" style="background: conic-gradient(
+                            #6db33f 0deg 50deg,
+                            #8bc34a 50deg 130deg,
+                            #4caf50 130deg 240deg,
+                            #81c784 240deg 360deg
+                        );">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">CCD Series</div>
                         </div>
                     </div>
                 </div>
@@ -870,47 +752,54 @@
             <div class="controls">
                 <div class="control-group">
                     <label class="control-label">Período</label>
-                    <select class="control-input" id="temporalPeriod" onchange="filterTemporalData()">
-                        <option value="monthly">Vista Mensual</option>
-                        <option value="quarterly">Vista Trimestral</option>
-                        <option value="yearly">Vista Anual</option>
+                    <select class="control-input" id="periodFilter" onchange="updateTemporalCharts()">
+                        <option value="yearly">Anual</option>
+                        <option value="era">Por Era (Pre-2025 vs 2025+)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Vista</label>
+                    <select class="control-input" id="temporalBrandFilter" onchange="updateTemporalCharts()">
+                        <option value="combined">Consolidado</option>
+                        <option value="fp">Solo Flying Pumas</option>
+                        <option value="ccd">Solo Creativa CCD</option>
+                        <option value="comparison">Comparación</option>
                     </select>
                 </div>
                 <div class="control-group">
                     <label class="control-label">Métrica</label>
-                    <select class="control-input" id="temporalMetric" onchange="filterTemporalData()">
+                    <select class="control-input" id="metricFilter" onchange="updateTemporalCharts()">
                         <option value="sales">Ventas ($)</option>
-                        <option value="volume">Volumen (lbs)</option>
                         <option value="price">Precio Promedio</option>
+                        <option value="volume">Volumen (KG)</option>
+                        <option value="orders">Número de Órdenes</option>
                     </select>
                 </div>
-                <button class="btn btn-secondary" onclick="exportTemporalData()">Exportar Datos</button>
             </div>
 
-            <!-- Evolution Charts -->
+            <!-- Temporal Charts -->
             <div class="grid grid-2">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Crecimiento Anual de Ventas</h3>
-                        <p class="card-subtitle">Era CCD vs Era Dual de Marcas</p>
+                        <h3 class="card-title">Evolución de Ventas</h3>
+                        <p class="card-subtitle">2022-2024: Solo Creativa | 2025+: Estrategia dual</p>
                     </div>
                     <div class="chart-container">
-                        <div class="custom-chart">
-                            <div class="chart-bar" style="height: 25%;">
-                                <div class="chart-bar-value">$118K</div>
-                                <div class="chart-bar-label">2022</div>
+                        <div class="css-bar-chart">
+                            <div class="css-bar" style="height: 18%; background: #6db33f;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">$280K</span>
                             </div>
-                            <div class="chart-bar" style="height: 40%;">
-                                <div class="chart-bar-value">$189K</div>
-                                <div class="chart-bar-label">2023</div>
+                            <div class="css-bar" style="height: 21%; background: #6db33f;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">$320K</span>
                             </div>
-                            <div class="chart-bar" style="height: 75%;">
-                                <div class="chart-bar-value">$355K</div>
-                                <div class="chart-bar-label">2024</div>
+                            <div class="css-bar" style="height: 24%; background: #6db33f;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">$370K</span>
                             </div>
-                            <div class="chart-bar" style="height: 100%;">
-                                <div class="chart-bar-value">$473K</div>
-                                <div class="chart-bar-label">2025</div>
+                            <div class="css-bar" style="height: 100%; background: linear-gradient(to top, #6db33f 0%, #6db33f 67%, #2d5016 67%, #2d5016 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">$1.58M</span>
+                            </div>
+                            <div class="css-bar" style="height: 53%; background: linear-gradient(to top, #6db33f 0%, #6db33f 55%, #2d5016 55%, #2d5016 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">$843K</span>
                             </div>
                         </div>
                     </div>
@@ -918,98 +807,62 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Precio Promedio por Año</h3>
-                        <p class="card-subtitle">Impacto del lanzamiento Flying Pumas</p>
+                        <h3 class="card-title">Evolución de Precios</h3>
+                        <p class="card-subtitle">Convergencia hacia $34.50/lb promedio</p>
                     </div>
                     <div class="chart-container">
-                        <div class="custom-chart">
-                            <div class="chart-bar" style="height: 30%;">
-                                <div class="chart-bar-value">$6.8</div>
-                                <div class="chart-bar-label">2022</div>
-                            </div>
-                            <div class="chart-bar" style="height: 35%;">
-                                <div class="chart-bar-value">$7.9</div>
-                                <div class="chart-bar-label">2023</div>
-                            </div>
-                            <div class="chart-bar" style="height: 40%;">
-                                <div class="chart-bar-value">$9.1</div>
-                                <div class="chart-bar-label">2024</div>
-                            </div>
-                            <div class="chart-bar" style="height: 50%;">
-                                <div class="chart-bar-value">$11.33</div>
-                                <div class="chart-bar-label">2025</div>
-                            </div>
+                        <div class="css-line-chart" style="background: linear-gradient(45deg,
+                            rgba(109, 179, 63, 0.1) 0%,
+                            rgba(109, 179, 63, 0.2) 25%,
+                            rgba(109, 179, 63, 0.4) 50%,
+                            rgba(45, 80, 22, 0.3) 75%,
+                            rgba(45, 80, 22, 0.6) 100%);">
+                            <div style="position: absolute; bottom: 10px; left: 5px; font-weight: 600; font-size: 0.75rem;">2022: $8.00</div>
+                            <div style="position: absolute; bottom: 30px; left: 20%; font-weight: 600; font-size: 0.75rem;">2023: $7.62</div>
+                            <div style="position: absolute; bottom: 50px; left: 40%; font-weight: 600; font-size: 0.75rem;">2024: $7.71</div>
+                            <div style="position: absolute; top: 50px; left: 60%; font-weight: 600; font-size: 0.75rem; color: var(--fp-primary);">2025: $11.33</div>
+                            <div style="position: absolute; top: 10px; right: 10px; font-weight: 600; color: var(--fp-primary);">Meta 2026: $34.50</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Seasonal Analysis -->
+            <!-- Growth Analysis -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Análisis de Estacionalidad</h3>
-                    <p class="card-subtitle">Patrones mensuales de ventas por marca</p>
+                    <h3 class="card-title">Análisis de Crecimiento</h3>
+                    <p class="card-subtitle">Impacto del lanzamiento Flying Pumas y estrategia de rebalanceo</p>
                 </div>
-                <div class="chart-container">
-                    <div class="custom-chart" style="height: 200px;">
-                        <div class="chart-bar" style="height: 60%;">
-                            <div class="chart-bar-value">$35K</div>
-                            <div class="chart-bar-label">Ene</div>
+                <div class="card-content">
+                    <div class="grid grid-3">
+                        <div>
+                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Era Pre-Flying Pumas (2022-2024)</h4>
+                            <p><strong>Crecimiento anual promedio:</strong> 15%</p>
+                            <p><strong>Precio estable:</strong> $7-8/lb</p>
+                            <p><strong>Base establecida:</strong> Creativa CCD</p>
                         </div>
-                        <div class="chart-bar" style="height: 70%;">
-                            <div class="chart-bar-value">$41K</div>
-                            <div class="chart-bar-label">Feb</div>
+                        <div>
+                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Lanzamiento 2025</h4>
+                            <p><strong>Crecimiento explosivo:</strong> +326%</p>
+                            <p><strong>Nueva estrategia dual:</strong> Premium + Volumen</p>
+                            <p><strong>Flying Pumas:</strong> $527K en primer año</p>
                         </div>
-                        <div class="chart-bar" style="height: 85%;">
-                            <div class="chart-bar-value">$50K</div>
-                            <div class="chart-bar-label">Mar</div>
-                        </div>
-                        <div class="chart-bar" style="height: 100%;">
-                            <div class="chart-bar-value">$59K</div>
-                            <div class="chart-bar-label">Abr</div>
-                        </div>
-                        <div class="chart-bar" style="height: 90%;">
-                            <div class="chart-bar-value">$53K</div>
-                            <div class="chart-bar-label">May</div>
-                        </div>
-                        <div class="chart-bar" style="height: 80%;">
-                            <div class="chart-bar-value">$47K</div>
-                            <div class="chart-bar-label">Jun</div>
-                        </div>
-                        <div class="chart-bar" style="height: 45%;">
-                            <div class="chart-bar-value">$27K</div>
-                            <div class="chart-bar-label">Jul</div>
-                        </div>
-                        <div class="chart-bar" style="height: 40%;">
-                            <div class="chart-bar-value">$24K</div>
-                            <div class="chart-bar-label">Ago</div>
-                        </div>
-                        <div class="chart-bar" style="height: 55%;">
-                            <div class="chart-bar-value">$32K</div>
-                            <div class="chart-bar-label">Sep</div>
-                        </div>
-                        <div class="chart-bar" style="height: 75%;">
-                            <div class="chart-bar-value">$44K</div>
-                            <div class="chart-bar-label">Oct</div>
-                        </div>
-                        <div class="chart-bar" style="height: 85%;">
-                            <div class="chart-bar-value">$50K</div>
-                            <div class="chart-bar-label">Nov</div>
-                        </div>
-                        <div class="chart-bar" style="height: 95%;">
-                            <div class="chart-bar-value">$56K</div>
-                            <div class="chart-bar-label">Dic</div>
+                        <div>
+                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Proyección 2026</h4>
+                            <p><strong>Consolidación:</strong> $843K meta</p>
+                            <p><strong>Rebalanceo mix:</strong> 44.5% FP / 55.5% CCD</p>
+                            <p><strong>Convergencia precio:</strong> $34.50/lb promedio</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Clients Analysis Tab -->
+        <!-- Clients Tab -->
         <div id="clients" class="tab-content">
             <div class="page-header">
-                <h1 class="page-title">Análisis de Clientes</h1>
-                <p class="page-subtitle">Segmentación, comportamiento y oportunidades en la base de 118 clientes consolidados</p>
+                <h1 class="page-title">Clientes & Oportunidades</h1>
+                <p class="page-subtitle">118 clientes consolidados con oportunidades de upsell identificadas</p>
             </div>
 
             <!-- Client Filters -->
@@ -1017,383 +870,285 @@
                 <div class="control-group">
                     <label class="control-label">Segmento</label>
                     <select class="control-input" id="clientSegmentFilter" onchange="filterClientData()">
-                        <option value="all">Todos los segmentos</option>
-                        <option value="premium">Clientes Premium (>$15K)</option>
-                        <option value="medium">Clientes Medios ($5K-$15K)</option>
-                        <option value="small">Clientes Pequeños (<$5K)</option>
+                        <option value="all">Todos los Clientes</option>
+                        <option value="multi">Multi-marca</option>
+                        <option value="fp-only">Solo Flying Pumas</option>
+                        <option value="ccd-only">Solo Creativa CCD</option>
+                        <option value="opportunity">Oportunidades Upsell</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Marca Preferida</label>
-                    <select class="control-input" id="brandPreferenceFilter" onchange="filterClientData()">
-                        <option value="all">Todas las marcas</option>
-                        <option value="fp">Flying Pumas</option>
-                        <option value="ccd">Creativa CCD</option>
-                        <option value="multi">Multi-marca</option>
+                    <label class="control-label">Región</label>
+                    <select class="control-input" id="regionFilter" onchange="filterClientData()">
+                        <option value="all">Todas las Regiones</option>
+                        <option value="north-america">Norteamérica</option>
+                        <option value="europe">Europa</option>
+                        <option value="asia">Asia</option>
+                        <option value="others">Otros</option>
                     </select>
                 </div>
-                <button class="btn btn-secondary" onclick="exportClientData()">Exportar Datos</button>
+                <div class="control-group">
+                    <label class="control-label">Tamaño</label>
+                    <select class="control-input" id="sizeFilter" onchange="filterClientData()">
+                        <option value="all">Todos los Tamaños</option>
+                        <option value="large">Grande (>$50K)</option>
+                        <option value="medium">Mediano ($10K-$50K)</option>
+                        <option value="small">Pequeño (<$10K)</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="exportClientData()">Exportar Clientes</button>
             </div>
 
-            <!-- Client Metrics -->
-            <div class="grid grid-4">
+            <!-- Client Insights -->
+            <div class="grid grid-3">
                 <div class="stat-card">
-                    <div class="stat-value">$254.7K</div>
-                    <div class="stat-label">Cliente Top (BLACK GOLD)</div>
-                    <div class="stat-change positive">Multi-marca</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">$4,827</div>
-                    <div class="stat-label">Ticket Promedio</div>
-                    <div class="stat-change positive">Por orden</div>
+                    <div class="stat-value">118</div>
+                    <div class="stat-label">Clientes Únicos</div>
+                    <div class="stat-change positive">51 FP + 67 CCD</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">68%</div>
-                    <div class="stat-label">Tasa de Retención</div>
-                    <div class="stat-change positive">Clientes recurrentes</div>
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">Clientes Multi-marca</div>
+                    <div class="stat-change positive">Oportunidad identificada</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">23</div>
-                    <div class="stat-label">Nuevos Clientes 2025</div>
-                    <div class="stat-change positive">+19% vs 2024</div>
-                </div>
-            </div>
-
-            <!-- Client Segmentation -->
-            <div class="grid grid-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Segmentación por Volumen de Compra</h3>
-                        <p class="card-subtitle">Distribución de clientes por tier de valor</p>
-                    </div>
-                    <div class="chart-container">
-                        <div class="pie-chart" style="background: conic-gradient(var(--fp-primary) 0deg 72deg, var(--fp-accent) 72deg 144deg, var(--fp-secondary) 144deg 288deg, var(--fp-neutral-300) 288deg 360deg);"></div>
-                        <div class="pie-legend">
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-primary);"></div>
-                                <span>Premium (>$15K): 20%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-accent);"></div>
-                                <span>Alto ($8K-$15K): 20%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-secondary);"></div>
-                                <span>Medio ($2K-$8K): 40%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--fp-neutral-300);"></div>
-                                <span>Bajo (<$2K): 20%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Preferencia de Marca por Segmento</h3>
-                        <p class="card-subtitle">Distribución Flying Pumas vs Creativa CCD</p>
-                    </div>
-                    <div class="chart-container">
-                        <div class="custom-chart">
-                            <div class="chart-bar" style="height: 100%;">
-                                <div class="chart-bar-value">85%</div>
-                                <div class="chart-bar-label">Premium<br>FP</div>
-                            </div>
-                            <div class="chart-bar" style="height: 60%;">
-                                <div class="chart-bar-value">55%</div>
-                                <div class="chart-bar-label">Alto<br>FP</div>
-                            </div>
-                            <div class="chart-bar" style="height: 25%;">
-                                <div class="chart-bar-value">25%</div>
-                                <div class="chart-bar-label">Medio<br>FP</div>
-                            </div>
-                            <div class="chart-bar" style="height: 10%;">
-                                <div class="chart-bar-value">5%</div>
-                                <div class="chart-bar-label">Bajo<br>FP</div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="stat-value">$110K</div>
+                    <div class="stat-label">Potencial Upsell Inmediato</div>
+                    <div class="stat-change positive">3 clientes target</div>
                 </div>
             </div>
 
-            <!-- Top Clients Table -->
-            <div class="card">
+            <!-- Opportunity Analysis -->
+            <div class="card opportunity-card">
                 <div class="card-header">
-                    <h3 class="card-title">Top 20 Clientes por Volumen</h3>
-                    <p class="card-subtitle">Análisis de concentración y oportunidades de crecimiento</p>
+                    <h3 class="card-title">Oportunidades Inmediatas de Upsell</h3>
+                    <p class="card-subtitle">Clientes grandes solo en Creativa CCD con potencial para Flying Pumas</p>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Ranking</th>
                                 <th>Cliente</th>
-                                <th>Total Histórico</th>
-                                <th>Flying Pumas</th>
-                                <th>Creativa CCD</th>
-                                <th>Tipo</th>
-                                <th>Potencial 2026</th>
+                                <th>Ventas CCD Actuales</th>
+                                <th>Potencial FP</th>
+                                <th>Impacto Precio</th>
+                                <th>Probabilidad</th>
+                                <th>Timeline</th>
+                                <th>Prioridad</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>BLACK GOLD</td>
-                                <td>$254,693</td>
-                                <td>$125,000</td>
-                                <td>$129,693</td>
-                                <td><span class="badge badge-success">Multi-marca</span></td>
-                                <td>$300K+</td>
+                                <td><strong>SPOT EUROPA</strong></td>
+                                <td>$211,512</td>
+                                <td>$50,000</td>
+                                <td>+$2.5/lb</td>
+                                <td><span class="badge badge-success">70%</span></td>
+                                <td>Q2 2026</td>
+                                <td><span class="badge badge-warning">Alta</span></td>
                             </tr>
                             <tr>
-                                <td>2</td>
-                                <td>DEFINITIVE COFFEE</td>
-                                <td>$187,432</td>
-                                <td>$187,432</td>
-                                <td>$0</td>
-                                <td><span class="badge badge-info">FP Exclusivo</span></td>
-                                <td>$220K</td>
+                                <td><strong>Equation LLC</strong></td>
+                                <td>$132,053</td>
+                                <td>$35,000</td>
+                                <td>+$1.8/lb</td>
+                                <td><span class="badge badge-success">65%</span></td>
+                                <td>Q2 2026</td>
+                                <td><span class="badge badge-warning">Alta</span></td>
                             </tr>
                             <tr>
-                                <td>3</td>
-                                <td>TERRES DE CAFE</td>
-                                <td>$156,789</td>
-                                <td>$0</td>
-                                <td>$156,789</td>
-                                <td><span class="badge badge-warning">CCD Exclusivo</span></td>
-                                <td>$180K</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>SPECIALTY ROASTERS</td>
-                                <td>$98,543</td>
-                                <td>$98,543</td>
-                                <td>$0</td>
-                                <td><span class="badge badge-info">FP Exclusivo</span></td>
-                                <td>$120K</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>COFFEE CULTURE GLOBAL</td>
-                                <td>$87,321</td>
-                                <td>$45,000</td>
-                                <td>$42,321</td>
-                                <td><span class="badge badge-success">Multi-marca</span></td>
-                                <td>$110K</td>
+                                <td><strong>Onyx Coffee Lab</strong></td>
+                                <td>$68,179</td>
+                                <td>$25,000</td>
+                                <td>+$1.2/lb</td>
+                                <td><span class="badge badge-info">55%</span></td>
+                                <td>Q3 2026</td>
+                                <td><span class="badge badge-info">Media</span></td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Geographic Distribution -->
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Distribución Geográfica</h3>
+                        <p class="card-subtitle">Clientes por región</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="css-pie-chart" style="background: conic-gradient(
+                            #2d5016 0deg 130deg,
+                            #4a7c59 130deg 220deg,
+                            #6db33f 220deg 300deg,
+                            #8bc34a 300deg 360deg
+                        );">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">Regiones</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Clientes por Ventas</h3>
+                        <p class="card-subtitle">Principales clientes consolidados</p>
+                    </div>
+                    <div class="table-container">
+                        <table class="table" id="clientsDetailTable">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Tipo</th>
+                                    <th>Total</th>
+                                    <th>Flying Pumas</th>
+                                    <th>Creativa CCD</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SPOT EUROPA</td>
+                                    <td>CCD-only</td>
+                                    <td>$211,512</td>
+                                    <td>$0</td>
+                                    <td>$211,512</td>
+                                    <td><span class="badge badge-warning">Oportunidad</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Equation LLC</td>
+                                    <td>CCD-only</td>
+                                    <td>$132,053</td>
+                                    <td>$0</td>
+                                    <td>$132,053</td>
+                                    <td><span class="badge badge-warning">Oportunidad</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Onyx Coffee Lab</td>
+                                    <td>Multi-marca</td>
+                                    <td>$78,179</td>
+                                    <td>$10,000</td>
+                                    <td>$68,179</td>
+                                    <td><span class="badge badge-success">Activo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Irving Farm Coffee Roasters</td>
+                                    <td>Multi-marca</td>
+                                    <td>$65,432</td>
+                                    <td>$25,000</td>
+                                    <td>$40,432</td>
+                                    <td><span class="badge badge-success">Activo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Tim Wendelboe</td>
+                                    <td>FP-only</td>
+                                    <td>$45,678</td>
+                                    <td>$45,678</td>
+                                    <td>$0</td>
+                                    <td><span class="badge badge-info">Premium</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Projections 2026 Tab -->
+        <!-- Projections Tab -->
         <div id="projections" class="tab-content">
             <div class="page-header">
                 <h1 class="page-title">Proyecciones 2026</h1>
-                <p class="page-subtitle">Modelo detallado para alcanzar $843K con mix óptimo 44.5% FP / 55.5% CCD</p>
+                <p class="page-subtitle">Escenarios para alcanzar la meta de $843,000 con precio promedio $34.50/lb</p>
             </div>
 
-            <!-- 2026 Key Targets -->
-            <div class="grid grid-4">
-                <div class="stat-card">
-                    <div class="stat-value">$843K</div>
-                    <div class="stat-label">Meta Total 2026</div>
-                    <div class="stat-change positive">+78% vs 2025</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">24,450</div>
-                    <div class="stat-label">Libras Objetivo</div>
-                    <div class="stat-change positive">450 cajas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">$34.50</div>
-                    <div class="stat-label">Precio Promedio Meta</div>
-                    <div class="stat-change positive">+204% vs actual</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">28%</div>
-                    <div class="stat-label">Progreso Q1 2026</div>
-                    <div class="stat-change positive">En línea con plan</div>
-                </div>
-            </div>
-
-            <!-- Progress Tracking -->
-            <div class="grid grid-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Progreso Flying Pumas vs Meta</h3>
-                        <p class="card-subtitle">Objetivo: $375K (44.5% del total)</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="progress-container">
-                            <div class="progress-label">Ventas: $105K / $375K</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 28%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-label">Precio: $48.50 / $50.00 meta</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 97%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-label">Volumen: 160 cajas objetivo</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 28%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Progreso Creativa CCD vs Meta</h3>
-                        <p class="card-subtitle">Objetivo: $468K (55.5% del total)</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="progress-container">
-                            <div class="progress-label">Ventas: $131K / $468K</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 28%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-label">Precio: $9.50 / $13.50 meta</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 70%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-label">Volumen: 290 cajas objetivo</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 28%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quarterly Breakdown -->
+            <!-- Scenario Analysis -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Proyección Trimestral 2026</h3>
-                    <p class="card-subtitle">Distribución estacional y plan de ejecución</p>
+                    <h3 class="card-title">Escenarios de Cumplimiento</h3>
+                    <p class="card-subtitle">Análisis de probabilidades para meta 2026</p>
                 </div>
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Trimestre</th>
-                                <th>Total Proyectado</th>
-                                <th>Flying Pumas</th>
-                                <th>Creativa CCD</th>
-                                <th>Precio Promedio</th>
-                                <th>Volumen (cajas)</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Q1 2026</td>
-                                <td>$236,000</td>
-                                <td>$105,000 (45%)</td>
-                                <td>$131,000 (55%)</td>
-                                <td>$34.15</td>
-                                <td>127</td>
-                                <td><span class="badge badge-success">Completado</span></td>
-                            </tr>
-                            <tr>
-                                <td>Q2 2026</td>
-                                <td>$210,000</td>
-                                <td>$94,000 (45%)</td>
-                                <td>$116,000 (55%)</td>
-                                <td>$34.50</td>
-                                <td>112</td>
-                                <td><span class="badge badge-info">En progreso</span></td>
-                            </tr>
-                            <tr>
-                                <td>Q3 2026</td>
-                                <td>$253,000</td>
-                                <td>$113,000 (45%)</td>
-                                <td>$140,000 (55%)</td>
-                                <td>$34.80</td>
-                                <td>135</td>
-                                <td><span class="badge badge-neutral">Planificado</span></td>
-                            </tr>
-                            <tr>
-                                <td>Q4 2026</td>
-                                <td>$144,000</td>
-                                <td>$63,000 (44%)</td>
-                                <td>$81,000 (56%)</td>
-                                <td>$35.00</td>
-                                <td>76</td>
-                                <td><span class="badge badge-neutral">Planificado</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="chart-container">
+                    <div class="css-bar-chart">
+                        <div class="css-bar" style="height: 80%; background: linear-gradient(to top, #dc2626, #ef4444);">
+                            <span style="transform: rotate(-90deg); white-space: nowrap;">80% Conservador</span>
+                        </div>
+                        <div class="css-bar" style="height: 60%; background: linear-gradient(to top, #f59e0b, #fbbf24);">
+                            <span style="transform: rotate(-90deg); white-space: nowrap;">60% Objetivo</span>
+                        </div>
+                        <div class="css-bar" style="height: 30%; background: linear-gradient(to top, #059669, #10b981);">
+                            <span style="transform: rotate(-90deg); white-space: nowrap;">30% Optimista</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Risk Assessment -->
-            <div class="grid grid-2">
+            <!-- Scenario Details -->
+            <div class="grid grid-3">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Factores de Riesgo</h3>
-                        <p class="card-subtitle">Elementos que podrían impactar las proyecciones</p>
+                        <h3 class="card-title">Conservador</h3>
+                        <p class="card-subtitle">80% probabilidad</p>
                     </div>
                     <div class="card-content">
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Riesgo Alto:</strong>
-                            <ul style="margin-left: 1rem;">
-                                <li>Resistencia de mercado a precios CCD +70%</li>
-                                <li>Competencia en segmento premium FP</li>
-                            </ul>
-                        </div>
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Riesgo Medio:</strong>
-                            <ul style="margin-left: 1rem;">
-                                <li>Variabilidad estacional mayor a la esperada</li>
-                                <li>Problemas de calidad/supply chain</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <strong>Riesgo Bajo:</strong>
-                            <ul style="margin-left: 1rem;">
-                                <li>Retención clientes existentes</li>
-                                <li>Demanda Flying Pumas en precio objetivo</li>
-                            </ul>
-                        </div>
+                        <p><strong>Total:</strong> $700,000</p>
+                        <p><strong>Flying Pumas:</strong> $300,000</p>
+                        <p><strong>Creativa CCD:</strong> $400,000</p>
+                        <p><strong>Precio Promedio:</strong> $28.5/lb</p>
+                        <p><strong>Gap vs Meta:</strong> -17%</p>
+                    </div>
+                </div>
+
+                <div class="card opportunity-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Objetivo</h3>
+                        <p class="card-subtitle">60% probabilidad</p>
+                    </div>
+                    <div class="card-content">
+                        <p><strong>Total:</strong> $843,000</p>
+                        <p><strong>Flying Pumas:</strong> $375,000</p>
+                        <p><strong>Creativa CCD:</strong> $468,000</p>
+                        <p><strong>Precio Promedio:</strong> $34.5/lb</p>
+                        <p><strong>Gap vs Meta:</strong> 0%</p>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Palancas de Crecimiento</h3>
-                        <p class="card-subtitle">Iniciativas que acelerarían resultados</p>
+                        <h3 class="card-title">Optimista</h3>
+                        <p class="card-subtitle">30% probabilidad</p>
                     </div>
                     <div class="card-content">
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Impacto Alto:</strong>
-                            <ul style="margin-left: 1rem;">
-                                <li>Línea "Accessible Premium" FP $45-55/lb</li>
-                                <li>Pricing dinámico por volumen CCD</li>
-                            </ul>
-                        </div>
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Impacto Medio:</strong>
-                            <ul style="margin-left: 1rem;">
-                                <li>Expansión geográfica Europa/Asia</li>
-                                <li>Programa fidelización multi-marca</li>
+                        <p><strong>Total:</strong> $950,000</p>
+                        <p><strong>Flying Pumas:</strong> $450,000</p>
+                        <p><strong>Creativa CCD:</strong> $500,000</p>
+                        <p><strong>Precio Promedio:</strong> $38.2/lb</p>
+                        <p><strong>Gap vs Meta:</strong> +13%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Actions for Goal Achievement -->
+            <div class="card critical-card">
+                <div class="card-header">
+                    <h3 class="card-title">Acciones Críticas para Escenario Objetivo</h3>
+                    <p class="card-subtitle">Hoja de ruta para alcanzar $843,000</p>
+                </div>
+                <div class="card-content">
+                    <div class="grid grid-2">
+                        <div>
+                            <h4>Inmediato (Q2 2026):</h4>
+                            <ul>
+                                <li>Upsell SPOT EUROPA, Equation LLC, Onyx (+$110K FP)</li>
+                                <li>Aumentar precios Creativa: $7.99 → $12-15/lb</li>
+                                <li>Desarrollar Flying Pumas intermedio ($35-45/lb)</li>
                             </ul>
                         </div>
                         <div>
-                            <strong>Quick Wins:</strong>
-                            <ul style="margin-left: 1rem;">
-                                <li>Cross-sell clientes mono-marca</li>
-                                <li>Optimización mix estacional</li>
+                            <h4>Corto Plazo (Q3-Q4 2026):</h4>
+                            <ul>
+                                <li>Expandir clientes multi-marca existentes</li>
+                                <li>Alcanzar mix 44.5% FP / 55.5% CCD</li>
+                                <li>Validar precio promedio $34.50/lb</li>
                             </ul>
                         </div>
                     </div>
@@ -1405,342 +1160,274 @@
         <div id="portfolio" class="tab-content">
             <div class="page-header">
                 <h1 class="page-title">Estrategia de Portfolio</h1>
-                <p class="page-subtitle">Plan integral para optimizar el mix de marcas y alcanzar $34.50/lb promedio ponderado</p>
+                <p class="page-subtitle">Rebalanceo estratégico y convergencia de precios para optimización</p>
             </div>
 
-            <!-- Strategic Framework -->
-            <div class="card insight-card">
-                <div class="card-header">
-                    <h3 class="card-title">Marco Estratégico: Estrategia Dual de Marcas</h3>
-                    <p class="card-subtitle">Posicionamiento diferenciado para maximizar valor del portfolio</p>
-                </div>
-                <div class="card-content">
-                    <div class="grid grid-2">
-                        <div>
-                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Flying Pumas - Premium Strategy</h4>
-                            <p><strong>Objetivo:</strong> Reducir precio promedio de $67.58 a $50/lb manteniendo percepción premium</p>
-                            <p><strong>Palancas:</strong></p>
-                            <ul style="margin-left: 1rem;">
-                                <li>Desarrollar línea "Accessible Premium" $45-55/lb</li>
-                                <li>Aumentar volumen del 33.4% al 44.5% del mix total</li>
-                                <li>Expandir mercados Europa y Asia</li>
-                                <li>Mantener diferenciación en calidad y trazabilidad</li>
-                            </ul>
+            <!-- Portfolio Analysis -->
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Evolución del Mix de Portfolio</h3>
+                        <p class="card-subtitle">Actual vs Óptimo para $34.50/lb</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="css-bar-chart">
+                            <div class="css-bar" style="height: 33.4%; background: #2d5016;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">Actual FP 33.4%</span>
+                            </div>
+                            <div class="css-bar" style="height: 66.6%; background: #6db33f;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">Actual CCD 66.6%</span>
+                            </div>
+                            <div style="width: 2rem;"></div>
+                            <div class="css-bar" style="height: 44.5%; background: #2d5016; opacity: 0.7;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">Óptimo FP 44.5%</span>
+                            </div>
+                            <div class="css-bar" style="height: 55.5%; background: #6db33f; opacity: 0.7;">
+                                <span style="transform: rotate(-90deg); white-space: nowrap;">Óptimo CCD 55.5%</span>
+                            </div>
                         </div>
-                        <div>
-                            <h4 style="color: var(--fp-accent); margin-bottom: 1rem;">Creativa CCD - Volume Strategy</h4>
-                            <p><strong>Objetivo:</strong> Aumentar precio promedio de $7.99 a $13.50/lb sin perder volumen</p>
-                            <p><strong>Palancas:</strong></p>
-                            <ul style="margin-left: 1rem;">
-                                <li>Implementar pricing dinámico por volumen</li>
-                                <li>Optimizar costs para mejorar margins</li>
-                                <li>Mantener 55.5% del mix pero mayor valor</li>
-                                <li>Focus en distribuidores y cadenas</li>
-                            </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Estrategia de Convergencia de Precios</h3>
+                        <p class="card-subtitle">Flying Pumas baja, Creativa CCD sube</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="css-line-chart" style="background: linear-gradient(135deg,
+                            rgba(45, 80, 22, 0.8) 0%,
+                            rgba(74, 124, 89, 0.5) 30%,
+                            rgba(109, 179, 63, 0.3) 60%,
+                            rgba(109, 179, 63, 0.6) 100%);">
+                            <div style="position: absolute; top: 10px; left: 10px; font-weight: 600; color: #2d5016;">FP: $67.58 → $50.00</div>
+                            <div style="position: absolute; bottom: 10px; right: 10px; font-weight: 600; color: #6db33f;">CCD: $7.99 → $15.00</div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 700; color: var(--fp-primary); background: white; padding: 0.5rem; border-radius: 4px;">Convergencia hacia $34.50</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Implementation Roadmap -->
+            <!-- Gap Analysis -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Roadmap de Implementación 2026</h3>
-                    <p class="card-subtitle">Acciones prioritarias por trimestre</p>
+                    <h3 class="card-title">Análisis del Gap de Precios</h3>
+                    <p class="card-subtitle">Reducción del gap extremo mediante convergencia estratégica</p>
+                </div>
+                <div class="card-content">
+                    <div class="grid grid-3">
+                        <div>
+                            <h4 style="color: var(--fp-primary);">Situación Actual</h4>
+                            <p><strong>Flying Pumas:</strong> $67.58/lb</p>
+                            <p><strong>Creativa CCD:</strong> $7.99/lb</p>
+                            <p><strong>Gap:</strong> $59.59/lb (746% diferencia)</p>
+                            <p><strong>Problema:</strong> Extrema polarización</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--fp-accent);">Estrategia de Convergencia</h4>
+                            <p><strong>FP Reduce:</strong> -$17.58 (-26%)</p>
+                            <p><strong>CCD Aumenta:</strong> +$7.01 (+88%)</p>
+                            <p><strong>Nuevo Gap:</strong> $35.00/lb (233% diferencia)</p>
+                            <p><strong>Resultado:</strong> Diferenciación saludable</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--fp-secondary);">Meta 2026</h4>
+                            <p><strong>Flying Pumas:</strong> $50.00/lb</p>
+                            <p><strong>Creativa CCD:</strong> $15.00/lb</p>
+                            <p><strong>Promedio Ponderado:</strong> $34.50/lb</p>
+                            <p><strong>Beneficio:</strong> Portfolio balanceado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Development Opportunities -->
+            <div class="card insight-card">
+                <div class="card-header">
+                    <h3 class="card-title">Oportunidades de Desarrollo de Productos</h3>
+                    <p class="card-subtitle">Gap crítico identificado en rango $20-40/lb</p>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Trimestre</th>
-                                <th>Iniciativa Flying Pumas</th>
-                                <th>Iniciativa Creativa CCD</th>
-                                <th>KPI Objetivo</th>
-                                <th>Riesgo</th>
+                                <th>Rango de Precio</th>
+                                <th>Status Actual</th>
+                                <th>Acción Recomendada</th>
+                                <th>Producto Sugerido</th>
+                                <th>Target</th>
+                                <th>Prioridad</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Q2 2026</td>
-                                <td>Lanzar línea Accessible Premium $45-55/lb</td>
-                                <td>Implementar pricing dinámico +15-20%</td>
-                                <td>Precio promedio global: $32/lb</td>
-                                <td><span class="badge badge-warning">Medio</span></td>
+                                <td>$25-35/lb</td>
+                                <td><span class="badge badge-warning">Gap crítico</span></td>
+                                <td>Crear línea intermedia</td>
+                                <td>FP "Accessible Premium"</td>
+                                <td>Clientes medianos-grandes</td>
+                                <td><span class="badge badge-warning">Alta</span></td>
                             </tr>
                             <tr>
-                                <td>Q3 2026</td>
-                                <td>Campaña expansión Europa (5 nuevos clientes)</td>
-                                <td>Optimización supply chain (-10% costos)</td>
-                                <td>Mix FP: 40%, Precio global: $34/lb</td>
-                                <td><span class="badge badge-success">Bajo</span></td>
+                                <td>$15-25/lb</td>
+                                <td><span class="badge badge-warning">Subrepresentado</span></td>
+                                <td>Upgrade CCD premium</td>
+                                <td>CCD "Premium Line"</td>
+                                <td>Clientes medianos</td>
+                                <td><span class="badge badge-warning">Alta</span></td>
                             </tr>
                             <tr>
-                                <td>Q4 2026</td>
-                                <td>Programa fidelización multi-marca</td>
-                                <td>Consolidación pricing nuevo nivel</td>
-                                <td>Mix FP: 44.5%, Precio: $34.50/lb</td>
-                                <td><span class="badge badge-info">Bajo</span></td>
+                                <td>$45-65/lb</td>
+                                <td><span class="badge badge-success">Bien cubierto</span></td>
+                                <td>Expansión controlada</td>
+                                <td>Nuevas variedades FP</td>
+                                <td>Clientes premium</td>
+                                <td><span class="badge badge-info">Media</span></td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            <!-- Strategic Metrics Dashboard -->
-            <div class="grid grid-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Mix Optimization</h3>
-                        <p class="card-subtitle">Balance óptimo FP/CCD</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-value" style="font-size: 1.5rem;">44.5% / 55.5%</div>
-                        <div class="stat-label">Target Mix FP/CCD</div>
-                        <div style="margin-top: 1rem;">
-                            <div class="progress-label">Progreso actual: 33.4% / 66.6%</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Price Convergence</h3>
-                        <p class="card-subtitle">Convergencia hacia $34.50</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-value" style="font-size: 1.5rem;">$34.50</div>
-                        <div class="stat-label">Target Promedio Ponderado</div>
-                        <div style="margin-top: 1rem;">
-                            <div class="progress-label">Gap actual: -$23.17 (-67%)</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 33%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Revenue Growth</h3>
-                        <p class="card-subtitle">Meta crecimiento 2026</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-value" style="font-size: 1.5rem;">+78%</div>
-                        <div class="stat-label">Crecimiento vs 2025</div>
-                        <div style="margin-top: 1rem;">
-                            <div class="progress-label">$473K → $843K</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 28%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Critical Success Factors -->
-            <div class="grid grid-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Factores Críticos de Éxito</h3>
-                        <p class="card-subtitle">Elementos clave para el éxito de la estrategia</p>
-                    </div>
-                    <div class="card-content">
-                        <div style="margin-bottom: 1.5rem;">
-                            <h5 style="color: var(--fp-primary); margin-bottom: 0.5rem;">Calidad & Consistencia</h5>
-                            <p>Mantener scores SCA 88+ y trazabilidad premium para justificar precios Flying Pumas</p>
-                        </div>
-                        <div style="margin-bottom: 1.5rem;">
-                            <h5 style="color: var(--fp-primary); margin-bottom: 0.5rem;">Diferenciación de Marca</h5>
-                            <p>Evitar canibalización manteniendo posicionamiento claro: FP=Premium, CCD=Volume</p>
-                        </div>
-                        <div style="margin-bottom: 1.5rem;">
-                            <h5 style="color: var(--fp-primary); margin-bottom: 0.5rem;">Gestión de Clientes</h5>
-                            <p>Desarrollar clientes multi-marca y optimizar cross-selling entre portfolios</p>
-                        </div>
-                        <div>
-                            <h5 style="color: var(--fp-primary); margin-bottom: 0.5rem;">Timing de Mercado</h5>
-                            <p>Ejecutar cambios de precio gradualmente para minimizar resistencia</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Monitoreo y KPIs</h3>
-                        <p class="card-subtitle">Métricas para seguimiento mensual</p>
-                    </div>
-                    <div class="card-content">
-                        <div style="margin-bottom: 1.5rem;">
-                            <h5 style="color: var(--fp-accent); margin-bottom: 0.5rem;">KPIs Financieros</h5>
-                            <ul style="margin-left: 1rem;">
-                                <li>Precio promedio ponderado mensual</li>
-                                <li>Mix FP/CCD por volumen y valor</li>
-                                <li>Revenue growth vs plan</li>
-                            </ul>
-                        </div>
-                        <div style="margin-bottom: 1.5rem;">
-                            <h5 style="color: var(--fp-accent); margin-bottom: 0.5rem;">KPIs de Mercado</h5>
-                            <ul style="margin-left: 1rem;">
-                                <li>Retención de clientes por segmento</li>
-                                <li>Nuevos clientes premium captados</li>
-                                <li>Cross-selling ratio multi-marca</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h5 style="color: var(--fp-accent); margin-bottom: 0.5rem;">KPIs Operacionales</h5>
-                            <ul style="margin-left: 1rem;">
-                                <li>Quality scores SCA mantenidos</li>
-                                <li>Timing entregas y disponibilidad</li>
-                                <li>Eficiencia supply chain</li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Dashboard data
-        const dashboardData = {
-            overview: {
-                totalSales: 1579070,
-                avgPrice: 11.33,
-                targetPrice: 34.50,
-                clients: 118,
-                target2026: 843000
+        // Historical Data Structure with Era Separation
+        const historicalData = {
+            // Pre-2025: Solo Creativa CCD (años antes de Flying Pumas)
+            pre2025: {
+                2022: { ccd: { sales: 280000, volume: 35000, price: 8.00, orders: 45, clients: 28 } },
+                2023: { ccd: { sales: 320000, volume: 42000, price: 7.62, orders: 52, clients: 32 } },
+                2024: { ccd: { sales: 370000, volume: 48000, price: 7.71, orders: 58, clients: 38 } }
             },
-            brands: {
-                flyingPumas: {
-                    series: [
-                        { name: "Iconic Series", sales: 4763, price: 90.02, clients: 2 },
-                        { name: "Washed Series", sales: 168983, price: 85.76, clients: 21 },
-                        { name: "Premium Natural", sales: 243739, price: 76.42, clients: 31 },
-                        { name: "Dynamic Cherry", sales: 11023, price: 37.74, clients: 3 }
-                    ],
-                    total: 527885,
-                    avgPrice: 67.58
+            // 2025+: Estrategia dual con objetivo $34.50/lb promedio
+            dual_strategy: {
+                2025: {
+                    fp: { sales: 527885, volume: 7814, price: 67.58, orders: 133, clients: 51 },
+                    ccd: { sales: 1051185, volume: 131560, price: 7.99, orders: 194, clients: 67 },
+                    combined: { sales: 1579070, volume: 139374, price: 11.33, orders: 327, clients: 118 }
                 },
-                creativaCCD: {
-                    series: [
-                        { name: "Splash", sales: 72655, price: 12.21, clients: 21 },
-                        { name: "Dynamic Cherry", sales: 207618, price: 11.12, clients: 37 },
-                        { name: "Intrinsic Cherry", sales: 246269, price: 9.55, clients: 34 },
-                        { name: "Otros", sales: 521164, price: 6.45, clients: 40 }
-                    ],
-                    total: 1051185,
-                    avgPrice: 7.99
+                2026: {
+                    targets: {
+                        fp: { sales: 375000, volume: 7500, price: 50.00, orders: 150, clients: 60 },
+                        ccd: { sales: 468000, volume: 31200, price: 15.00, orders: 200, clients: 75 },
+                        combined: { sales: 843000, volume: 38700, price: 34.50, orders: 350, clients: 135 }
+                    }
                 }
-            },
-            clients: [
-                { rank: 1, name: "BLACK GOLD", total: 254693, fp: 125000, ccd: 129693, type: "Multi-marca", potential: "300K+" },
-                { rank: 2, name: "DEFINITIVE COFFEE", total: 187432, fp: 187432, ccd: 0, type: "FP Exclusivo", potential: "220K" },
-                { rank: 3, name: "TERRES DE CAFE", total: 156789, fp: 0, ccd: 156789, type: "CCD Exclusivo", potential: "180K" },
-                { rank: 4, name: "SPECIALTY ROASTERS", total: 98543, fp: 98543, ccd: 0, type: "FP Exclusivo", potential: "120K" },
-                { rank: 5, name: "COFFEE CULTURE GLOBAL", total: 87321, fp: 45000, ccd: 42321, type: "Multi-marca", potential: "110K" }
-            ],
-            projections2026: {
-                target: 843000,
-                fpTarget: 375000,
-                ccdTarget: 468000,
-                currentProgress: 28,
-                quarters: [
-                    { q: "Q1", total: 236000, fp: 105000, ccd: 131000, status: "Completado" },
-                    { q: "Q2", total: 210000, fp: 94000, ccd: 116000, status: "En progreso" },
-                    { q: "Q3", total: 253000, fp: 113000, ccd: 140000, status: "Planificado" },
-                    { q: "Q4", total: 144000, fp: 63000, ccd: 81000, status: "Planificado" }
-                ]
             }
         };
 
-        // Tab functionality
-        function showTab(tabName) {
-            // Remove active class from all nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
+        // Client Data
+        const clientData = [
+            { name: "SPOT EUROPA", type: "ccd-only", region: "europe", size: "large", total: 211512, fp: 0, ccd: 211512 },
+            { name: "Equation LLC", type: "ccd-only", region: "north-america", size: "large", total: 132053, fp: 0, ccd: 132053 },
+            { name: "Onyx Coffee Lab", type: "multi", region: "north-america", size: "medium", total: 78179, fp: 10000, ccd: 68179 },
+            { name: "Irving Farm Coffee Roasters", type: "multi", region: "north-america", size: "medium", total: 65432, fp: 25000, ccd: 40432 },
+            { name: "Tim Wendelboe", type: "fp-only", region: "europe", size: "medium", total: 45678, fp: 45678, ccd: 0 }
+        ];
 
+        // Tab Management
+        function showTab(tabId) {
             // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
+            // Remove active class from all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
 
             // Add active class to clicked nav link
             event.target.classList.add('active');
         }
 
-        // Filter functions
+        // Filter Functions
         function filterBrandData() {
-            const brand = document.getElementById('brandFilter').value;
-            console.log('Filtering brand data for:', brand);
-            // Implementation would filter tables and charts based on selection
+            const brandFilter = document.getElementById('brandFilter').value;
+            console.log('Filtering brands:', brandFilter);
+            // Filter logic here
         }
 
-        function filterTemporalData() {
-            const period = document.getElementById('temporalPeriod').value;
-            const metric = document.getElementById('temporalMetric').value;
-            console.log('Filtering temporal data:', period, metric);
-            // Implementation would update charts based on selection
+        function updateTemporalCharts() {
+            const periodFilter = document.getElementById('periodFilter').value;
+            const brandFilter = document.getElementById('temporalBrandFilter').value;
+            const metricFilter = document.getElementById('metricFilter').value;
+            console.log('Updating temporal charts:', { periodFilter, brandFilter, metricFilter });
+            // Update logic here
         }
 
         function filterClientData() {
             const segment = document.getElementById('clientSegmentFilter').value;
-            const brand = document.getElementById('brandPreferenceFilter').value;
-            console.log('Filtering client data:', segment, brand);
-            // Implementation would filter client table
+            const region = document.getElementById('regionFilter').value;
+            const size = document.getElementById('sizeFilter').value;
+
+            const filteredData = clientData.filter(client => {
+                const segmentMatch = segment === 'all' || client.type === segment;
+                const regionMatch = region === 'all' || client.region === region;
+                const sizeMatch = size === 'all' || client.size === size;
+                return segmentMatch && regionMatch && sizeMatch;
+            });
+
+            updateClientTable(filteredData);
         }
 
-        // Export functions
+        function updateClientTable(data) {
+            const tbody = document.querySelector('#clientsDetailTable tbody');
+            tbody.innerHTML = '';
+
+            data.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.name}</td>
+                    <td>${client.type}</td>
+                    <td>$${client.total.toLocaleString()}</td>
+                    <td>$${client.fp.toLocaleString()}</td>
+                    <td>$${client.ccd.toLocaleString()}</td>
+                    <td><span class="badge badge-${client.type === 'multi' ? 'success' : client.type === 'fp-only' ? 'info' : 'warning'}">${client.type === 'multi' ? 'Activo' : client.type === 'fp-only' ? 'Premium' : 'Oportunidad'}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Export Functions
         function exportBrandData() {
-            const data = [];
+            const csvContent = "data:text/csv;charset=utf-8," +
+                "Serie,Ventas,Precio/lb,Clientes,Estrategia\n" +
+                "Iconic Series,$4763,$90.02,2,Ultra-Premium exclusivo\n" +
+                "Washed Series,$168983,$85.76,21,Premium Alto establecido\n" +
+                "Premium Natural,$243739,$76.42,31,Core Premium (principal)\n" +
+                "Dynamic Cherry,$11023,$37.74,3,Premium Accesible";
 
-            dashboardData.brands.flyingPumas.series.forEach(series => {
-                data.push([series.name, 'Flying Pumas', series.sales, series.price, series.clients]);
-            });
-
-            dashboardData.brands.creativaCCD.series.forEach(series => {
-                data.push([series.name, 'Creativa CCD', series.sales, series.price, series.clients]);
-            });
-
-            const csvContent = "data:text/csv;charset=utf-8,Serie,Marca,Ventas,Precio,Clientes\n" +
-                data.map(row => row.join(",")).join("\n");
-
+            const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "flying_pumas_brand_analysis.csv");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "brand_analysis.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
-
-        function exportTemporalData() {
-            // Implementation for temporal data export
-            console.log('Exporting temporal data...');
         }
 
         function exportClientData() {
-            const csvContent = "data:text/csv;charset=utf-8,Ranking,Cliente,Total,Flying Pumas,Creativa CCD,Tipo,Potencial\n" +
-                dashboardData.clients.map(client =>
-                    [client.rank, client.name, client.total, client.fp, client.ccd, client.type, client.potential].join(",")
+            const csvContent = "data:text/csv;charset=utf-8," +
+                "Cliente,Tipo,Total,Flying Pumas,Creativa CCD,Region,Tamaño\n" +
+                clientData.map(client =>
+                    `${client.name},${client.type},$${client.total},$${client.fp},$${client.ccd},${client.region},${client.size}`
                 ).join("\n");
 
+            const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "flying_pumas_client_analysis.csv");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "client_analysis.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Initialize dashboard
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Flying Pumas Executive Dashboard loaded successfully');
+            updateClientTable(clientData);
         });
     </script>
 </body>
