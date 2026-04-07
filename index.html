@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flying Pumas AI Strategy Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Flying Pumas Executive Design System */
@@ -258,99 +259,6 @@
             padding: 1rem;
         }
 
-        /* Professional Chart Colors */
-        :root {
-            --chart-primary: #1a365d;
-            --chart-secondary: #2c5282;
-            --chart-accent: #3182ce;
-            --chart-success: #38a169;
-            --chart-warning: #d69e2e;
-            --chart-danger: #e53e3e;
-            --chart-neutral: #718096;
-            --chart-light: #edf2f7;
-        }
-
-        /* CSS-based Chart Visualizations */
-        .css-pie-chart {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto;
-            position: relative;
-            box-shadow: var(--fp-shadow-sm);
-        }
-
-        .css-bar-chart {
-            display: flex;
-            align-items: end;
-            height: 280px;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: var(--fp-neutral-50);
-            border-radius: var(--fp-radius-md);
-        }
-
-        .css-bar {
-            flex: 1;
-            background: var(--chart-primary);
-            border-radius: var(--fp-radius-sm);
-            display: flex;
-            align-items: end;
-            justify-content: center;
-            padding: 0.5rem;
-            color: white;
-            font-weight: 600;
-            font-size: 0.75rem;
-            position: relative;
-            box-shadow: var(--fp-shadow-sm);
-            transition: all 0.3s ease;
-        }
-
-        .css-bar:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--fp-shadow-md);
-        }
-
-        .css-line-chart {
-            position: relative;
-            height: 200px;
-            background: var(--fp-neutral-50);
-            border-radius: var(--fp-radius-md);
-            padding: 1rem;
-            box-shadow: var(--fp-shadow-sm);
-        }
-
-        .price-evolution-line {
-            position: absolute;
-            height: 4px;
-            background: linear-gradient(to right,
-                var(--chart-danger) 0%,
-                var(--chart-warning) 25%,
-                var(--chart-accent) 50%,
-                var(--chart-success) 100%);
-            border-radius: 2px;
-            top: 50%;
-            left: 1rem;
-            right: 1rem;
-            transform: translateY(-50%);
-        }
-
-        /* Interactive Elements */
-        .filter-active {
-            background: var(--fp-accent) !important;
-            color: white !important;
-        }
-
-        .data-point {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--chart-primary);
-            border: 2px solid white;
-            box-shadow: var(--fp-shadow-sm);
-        }
-
         /* Controls */
         .controls {
             display: flex;
@@ -491,14 +399,32 @@
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
+        }
 
-            .nav-tabs {
-                padding: 0 1rem;
+        @media (max-width: 768px) {
+            .nav-list {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .nav-link {
+                padding: 0.75rem 0;
+                border-bottom: none;
+                border-left: 3px solid transparent;
+            }
+
+            .nav-link:hover,
+            .nav-link.active {
+                border-left-color: var(--fp-accent);
+                border-bottom-color: transparent;
+            }
+
+            .controls {
+                flex-direction: column;
             }
         }
     </style>
 </head>
-
 <body>
     <!-- Header -->
     <header class="header">
@@ -581,21 +507,7 @@
                         <p class="card-subtitle">Rebalanceo requerido para alcanzar $34.50/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-bar-chart">
-                            <div class="css-bar" style="height: 33.4%; background: linear-gradient(135deg, var(--chart-primary) 0%, var(--chart-secondary) 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">FP Actual<br>33.4%</span>
-                            </div>
-                            <div class="css-bar" style="height: 66.6%; background: linear-gradient(135deg, var(--chart-success) 0%, var(--chart-accent) 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">CCD Actual<br>66.6%</span>
-                            </div>
-                            <div style="width: 2rem; display: flex; align-items: center; justify-content: center; color: var(--fp-neutral-600); font-weight: 600; transform: rotate(90deg);">vs</div>
-                            <div class="css-bar" style="height: 44.5%; background: linear-gradient(135deg, var(--chart-primary) 0%, var(--chart-secondary) 100%); opacity: 0.8; border: 2px dashed var(--chart-primary);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">FP Óptimo<br>44.5%</span>
-                            </div>
-                            <div class="css-bar" style="height: 55.5%; background: linear-gradient(135deg, var(--chart-success) 0%, var(--chart-accent) 100%); opacity: 0.8; border: 2px dashed var(--chart-success);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">CCD Óptimo<br>55.5%</span>
-                            </div>
-                        </div>
+                        <canvas id="overviewMixChart"></canvas>
                     </div>
                 </div>
 
@@ -605,22 +517,7 @@
                         <p class="card-subtitle">Proyección hacia meta $34.50/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-line-chart">
-                            <div class="price-evolution-line"></div>
-                            <!-- Price points -->
-                            <div class="data-point" style="left: 5%; bottom: 20%; background: var(--chart-danger);" title="2022: $8.00"></div>
-                            <div class="data-point" style="left: 25%; bottom: 18%; background: var(--chart-danger);" title="2023: $7.62"></div>
-                            <div class="data-point" style="left: 45%; bottom: 19%; background: var(--chart-warning);" title="2024: $7.71"></div>
-                            <div class="data-point" style="left: 65%; bottom: 35%; background: var(--chart-accent);" title="2025: $11.33"></div>
-                            <div class="data-point" style="left: 85%; bottom: 85%; background: var(--chart-success);" title="Meta 2026: $34.50"></div>
-
-                            <!-- Labels -->
-                            <div style="position: absolute; bottom: 5px; left: 5%; font-size: 0.7rem; font-weight: 600; color: var(--chart-danger);">2022<br>$8.00</div>
-                            <div style="position: absolute; bottom: 5px; left: 25%; font-size: 0.7rem; font-weight: 600; color: var(--chart-danger);">2023<br>$7.62</div>
-                            <div style="position: absolute; bottom: 5px; left: 45%; font-size: 0.7rem; font-weight: 600; color: var(--chart-warning);">2024<br>$7.71</div>
-                            <div style="position: absolute; bottom: 5px; left: 65%; font-size: 0.7rem; font-weight: 600; color: var(--chart-accent);">2025<br>$11.33</div>
-                            <div style="position: absolute; top: 5px; right: 15%; font-size: 0.8rem; font-weight: 700; color: var(--chart-success); text-align: center;">Meta 2026<br>$34.50/lb</div>
-                        </div>
+                        <canvas id="overviewPriceChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -661,13 +558,6 @@
                     <label class="control-label">Serie/Producto</label>
                     <select class="control-input" id="seriesFilter" onchange="filterBrandData()">
                         <option value="all">Todas las Series</option>
-                        <option value="iconic-series">FP: Iconic Series</option>
-                        <option value="washed-series">FP: Washed Series</option>
-                        <option value="premium-natural">FP: Premium Natural</option>
-                        <option value="dynamic-cherry">FP: Dynamic Cherry</option>
-                        <option value="splash">CCD: Splash</option>
-                        <option value="intrinsic-cherry">CCD: Intrinsic Cherry</option>
-                        <option value="otros">CCD: Otros</option>
                     </select>
                 </div>
                 <button class="btn btn-secondary" onclick="exportBrandData()">Exportar Datos</button>
@@ -681,14 +571,7 @@
                         <p class="card-subtitle">Precio promedio: $67.58/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-pie-chart" style="background: conic-gradient(
-                            var(--chart-primary) 0deg 15deg,
-                            var(--chart-secondary) 15deg 135deg,
-                            var(--chart-accent) 135deg 300deg,
-                            var(--chart-success) 300deg 360deg
-                        ); box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">FP Series</div>
-                        </div>
+                        <canvas id="fpSeriesChart"></canvas>
                     </div>
                 </div>
 
@@ -698,14 +581,7 @@
                         <p class="card-subtitle">Precio promedio: $7.99/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-pie-chart" style="background: conic-gradient(
-                            #6db33f 0deg 50deg,
-                            #8bc34a 50deg 130deg,
-                            #4caf50 130deg 240deg,
-                            #81c784 240deg 360deg
-                        );">
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">CCD Series</div>
-                        </div>
+                        <canvas id="ccdSeriesChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -856,23 +732,7 @@
                         <p class="card-subtitle">2022-2024: Solo Creativa | 2025+: Estrategia dual</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-bar-chart" id="temporalSalesChart">
-                            <div class="css-bar" style="height: 18%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-accent) 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2022<br>$280K</span>
-                            </div>
-                            <div class="css-bar" style="height: 21%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-accent) 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2023<br>$320K</span>
-                            </div>
-                            <div class="css-bar" style="height: 24%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-accent) 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2024<br>$370K</span>
-                            </div>
-                            <div class="css-bar" style="height: 100%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-success) 67%, var(--chart-primary) 67%, var(--chart-primary) 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 700; font-size: 0.8rem;">2025<br>$1.58M<br>Dual</span>
-                            </div>
-                            <div class="css-bar" style="height: 53%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-success) 55%, var(--chart-primary) 55%, var(--chart-primary) 100%); opacity: 0.8; border: 2px dashed var(--chart-primary);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2026<br>$843K<br>Meta</span>
-                            </div>
-                        </div>
+                        <canvas id="temporalSalesChart"></canvas>
                     </div>
                 </div>
 
@@ -882,38 +742,7 @@
                         <p class="card-subtitle">Convergencia hacia $34.50/lb promedio</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-line-chart" id="temporalPriceChart">
-                            <!-- Price evolution curves -->
-                            <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;">
-                                <!-- CCD price line (stable then rising) -->
-                                <path d="M 60 160 Q 180 155 280 150 Q 320 145 340 80"
-                                      stroke="var(--chart-success)" stroke-width="3" fill="none" stroke-dasharray="5,5"/>
-                                <!-- FP price line (high then converging) -->
-                                <path d="M 240 40 Q 280 45 320 60"
-                                      stroke="var(--chart-primary)" stroke-width="3" fill="none"/>
-                                <!-- Combined average -->
-                                <path d="M 60 160 Q 150 155 240 120 Q 280 100 320 70"
-                                      stroke="var(--chart-accent)" stroke-width="4" fill="none"/>
-                            </svg>
-
-                            <!-- Data points with exact values -->
-                            <div class="data-point" style="left: 15%; bottom: 20%; background: var(--chart-success);" title="CCD 2022: $8.00"></div>
-                            <div class="data-point" style="left: 25%; bottom: 22%; background: var(--chart-success);" title="CCD 2023: $7.62"></div>
-                            <div class="data-point" style="left: 35%; bottom: 21%; background: var(--chart-success);" title="CCD 2024: $7.71"></div>
-                            <div class="data-point" style="left: 50%; bottom: 25%; background: var(--chart-success);" title="CCD 2025: $7.99"></div>
-                            <div class="data-point" style="left: 80%; bottom: 60%; background: var(--chart-success);" title="CCD 2026: $15.00"></div>
-
-                            <div class="data-point" style="left: 50%; bottom: 80%; background: var(--chart-primary);" title="FP 2025: $67.58"></div>
-                            <div class="data-point" style="left: 80%; bottom: 70%; background: var(--chart-primary);" title="FP 2026: $50.00"></div>
-
-                            <div class="data-point" style="left: 50%; bottom: 40%; background: var(--chart-accent);" title="Promedio 2025: $11.33"></div>
-                            <div class="data-point" style="left: 80%; bottom: 65%; background: var(--chart-accent);" title="Meta 2026: $34.50"></div>
-
-                            <!-- Labels -->
-                            <div style="position: absolute; bottom: 5px; left: 15%; font-size: 0.7rem; font-weight: 600; color: var(--chart-success);">CCD: $8→$15</div>
-                            <div style="position: absolute; top: 20%; right: 20%; font-size: 0.7rem; font-weight: 600; color: var(--chart-primary);">FP: $67→$50</div>
-                            <div style="position: absolute; top: 5px; right: 5%; font-size: 0.8rem; font-weight: 700; color: var(--chart-accent);">Convergencia<br>$34.50/lb</div>
-                        </div>
+                        <canvas id="temporalPriceChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -924,27 +753,8 @@
                     <h3 class="card-title">Análisis de Crecimiento</h3>
                     <p class="card-subtitle">Impacto del lanzamiento Flying Pumas y estrategia de rebalanceo</p>
                 </div>
-                <div class="card-content">
-                    <div class="grid grid-3">
-                        <div>
-                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Era Pre-Flying Pumas (2022-2024)</h4>
-                            <p><strong>Crecimiento anual promedio:</strong> 15%</p>
-                            <p><strong>Precio estable:</strong> $7-8/lb</p>
-                            <p><strong>Base establecida:</strong> Creativa CCD</p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Lanzamiento 2025</h4>
-                            <p><strong>Crecimiento explosivo:</strong> +326%</p>
-                            <p><strong>Nueva estrategia dual:</strong> Premium + Volumen</p>
-                            <p><strong>Flying Pumas:</strong> $527K en primer año</p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--fp-primary); margin-bottom: 1rem;">Proyección 2026</h4>
-                            <p><strong>Consolidación:</strong> $843K meta</p>
-                            <p><strong>Rebalanceo mix:</strong> 44.5% FP / 55.5% CCD</p>
-                            <p><strong>Convergencia precio:</strong> $34.50/lb promedio</p>
-                        </div>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="growthChart"></canvas>
                 </div>
             </div>
         </div>
@@ -972,41 +782,21 @@
                     <label class="control-label">Región</label>
                     <select class="control-input" id="regionFilter" onchange="filterClientData()">
                         <option value="all">Todas las Regiones</option>
-                        <option value="north-america">Norteamérica</option>
-                        <option value="europe">Europa</option>
+                        <option value="europa">Europa</option>
                         <option value="asia">Asia</option>
-                        <option value="others">Otros</option>
+                        <option value="americas">Américas</option>
                     </select>
                 </div>
                 <div class="control-group">
                     <label class="control-label">Tamaño</label>
                     <select class="control-input" id="sizeFilter" onchange="filterClientData()">
-                        <option value="all">Todos los Tamaños</option>
-                        <option value="large">Grande (>$50K)</option>
-                        <option value="medium">Mediano ($10K-$50K)</option>
-                        <option value="small">Pequeño (<$10K)</option>
+                        <option value="all">Todos</option>
+                        <option value="large">Grande (>$100K)</option>
+                        <option value="medium">Medio ($25K-$100K)</option>
+                        <option value="small">Pequeño (<$25K)</option>
                     </select>
                 </div>
                 <button class="btn btn-secondary" onclick="exportClientData()">Exportar Clientes</button>
-            </div>
-
-            <!-- Client Insights -->
-            <div class="grid grid-3">
-                <div class="stat-card">
-                    <div class="stat-value">118</div>
-                    <div class="stat-label">Clientes Únicos</div>
-                    <div class="stat-change positive">51 FP + 67 CCD</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">15</div>
-                    <div class="stat-label">Clientes Multi-marca</div>
-                    <div class="stat-change positive">Oportunidad identificada</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">$110K</div>
-                    <div class="stat-label">Potencial Upsell Inmediato</div>
-                    <div class="stat-change positive">3 clientes target</div>
-                </div>
             </div>
 
             <!-- Opportunity Analysis -->
@@ -1069,14 +859,7 @@
                         <p class="card-subtitle">Clientes por región</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-pie-chart" style="background: conic-gradient(
-                            #2d5016 0deg 130deg,
-                            #4a7c59 130deg 220deg,
-                            #6db33f 220deg 300deg,
-                            #8bc34a 300deg 360deg
-                        );">
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">Regiones</div>
-                        </div>
+                        <canvas id="geoDistributionChart"></canvas>
                     </div>
                 </div>
 
@@ -1097,48 +880,7 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>SPOT EUROPA</td>
-                                    <td>CCD-only</td>
-                                    <td>$211,512</td>
-                                    <td>$0</td>
-                                    <td>$211,512</td>
-                                    <td><span class="badge badge-warning">Oportunidad</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Equation LLC</td>
-                                    <td>CCD-only</td>
-                                    <td>$132,053</td>
-                                    <td>$0</td>
-                                    <td>$132,053</td>
-                                    <td><span class="badge badge-warning">Oportunidad</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Onyx Coffee Lab</td>
-                                    <td>Multi-marca</td>
-                                    <td>$78,179</td>
-                                    <td>$10,000</td>
-                                    <td>$68,179</td>
-                                    <td><span class="badge badge-success">Activo</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Irving Farm Coffee Roasters</td>
-                                    <td>Multi-marca</td>
-                                    <td>$65,432</td>
-                                    <td>$25,000</td>
-                                    <td>$40,432</td>
-                                    <td><span class="badge badge-success">Activo</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Tim Wendelboe</td>
-                                    <td>FP-only</td>
-                                    <td>$45,678</td>
-                                    <td>$45,678</td>
-                                    <td>$0</td>
-                                    <td><span class="badge badge-info">Premium</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -1159,17 +901,7 @@
                     <p class="card-subtitle">Análisis de probabilidades para meta 2026</p>
                 </div>
                 <div class="chart-container">
-                    <div class="css-bar-chart">
-                        <div class="css-bar" style="height: 80%; background: linear-gradient(to top, #dc2626, #ef4444);">
-                            <span style="transform: rotate(-90deg); white-space: nowrap;">80% Conservador</span>
-                        </div>
-                        <div class="css-bar" style="height: 60%; background: linear-gradient(to top, #f59e0b, #fbbf24);">
-                            <span style="transform: rotate(-90deg); white-space: nowrap;">60% Objetivo</span>
-                        </div>
-                        <div class="css-bar" style="height: 30%; background: linear-gradient(to top, #059669, #10b981);">
-                            <span style="transform: rotate(-90deg); white-space: nowrap;">30% Optimista</span>
-                        </div>
-                    </div>
+                    <canvas id="projectionScenariosChart"></canvas>
                 </div>
             </div>
 
@@ -1262,21 +994,7 @@
                         <p class="card-subtitle">Actual vs Óptimo para $34.50/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-bar-chart">
-                            <div class="css-bar" style="height: 33.4%; background: #2d5016;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">Actual FP 33.4%</span>
-                            </div>
-                            <div class="css-bar" style="height: 66.6%; background: #6db33f;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">Actual CCD 66.6%</span>
-                            </div>
-                            <div style="width: 2rem;"></div>
-                            <div class="css-bar" style="height: 44.5%; background: #2d5016; opacity: 0.7;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">Óptimo FP 44.5%</span>
-                            </div>
-                            <div class="css-bar" style="height: 55.5%; background: #6db33f; opacity: 0.7;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">Óptimo CCD 55.5%</span>
-                            </div>
-                        </div>
+                        <canvas id="portfolioMixChart"></canvas>
                     </div>
                 </div>
 
@@ -1286,15 +1004,7 @@
                         <p class="card-subtitle">Flying Pumas baja, Creativa CCD sube</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-line-chart" style="background: linear-gradient(135deg,
-                            rgba(45, 80, 22, 0.8) 0%,
-                            rgba(74, 124, 89, 0.5) 30%,
-                            rgba(109, 179, 63, 0.3) 60%,
-                            rgba(109, 179, 63, 0.6) 100%);">
-                            <div style="position: absolute; top: 10px; left: 10px; font-weight: 600; color: #2d5016;">FP: $67.58 → $50.00</div>
-                            <div style="position: absolute; bottom: 10px; right: 10px; font-weight: 600; color: #6db33f;">CCD: $7.99 → $15.00</div>
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 700; color: var(--fp-primary); background: white; padding: 0.5rem; border-radius: 4px;">Convergencia hacia $34.50</div>
-                        </div>
+                        <canvas id="priceStrategyChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -1305,30 +1015,8 @@
                     <h3 class="card-title">Análisis del Gap de Precios</h3>
                     <p class="card-subtitle">Reducción del gap extremo mediante convergencia estratégica</p>
                 </div>
-                <div class="card-content">
-                    <div class="grid grid-3">
-                        <div>
-                            <h4 style="color: var(--fp-primary);">Situación Actual</h4>
-                            <p><strong>Flying Pumas:</strong> $67.58/lb</p>
-                            <p><strong>Creativa CCD:</strong> $7.99/lb</p>
-                            <p><strong>Gap:</strong> $59.59/lb (746% diferencia)</p>
-                            <p><strong>Problema:</strong> Extrema polarización</p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--fp-accent);">Estrategia de Convergencia</h4>
-                            <p><strong>FP Reduce:</strong> -$17.58 (-26%)</p>
-                            <p><strong>CCD Aumenta:</strong> +$7.01 (+88%)</p>
-                            <p><strong>Nuevo Gap:</strong> $35.00/lb (233% diferencia)</p>
-                            <p><strong>Resultado:</strong> Diferenciación saludable</p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--fp-secondary);">Meta 2026</h4>
-                            <p><strong>Flying Pumas:</strong> $50.00/lb</p>
-                            <p><strong>Creativa CCD:</strong> $15.00/lb</p>
-                            <p><strong>Promedio Ponderado:</strong> $34.50/lb</p>
-                            <p><strong>Beneficio:</strong> Portfolio balanceado</p>
-                        </div>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="gapAnalysisChart"></canvas>
                 </div>
             </div>
 
@@ -1408,54 +1096,49 @@
             }
         };
 
-        // Complete Brand Series Data
-        const brandSeriesData = {
-            fp: {
-                'iconic-series': { sales: 4763, price: 90.02, clients: 2, volume: 52.9, strategy: 'Ultra-Premium exclusivo' },
-                'washed-series': { sales: 168983, price: 85.76, clients: 21, volume: 1970.3, strategy: 'Premium Alto establecido' },
-                'premium-natural': { sales: 243739, price: 76.42, clients: 31, volume: 3190.1, strategy: 'Core Premium (principal)' },
-                'dynamic-cherry': { sales: 11023, price: 37.74, clients: 3, volume: 292.1, strategy: 'Premium Accesible' }
-            },
-            ccd: {
-                'splash': { sales: 72655, price: 12.21, clients: 21, volume: 5950.0, strategy: 'Tope Creativa' },
-                'dynamic-cherry': { sales: 207618, price: 11.12, clients: 37, volume: 18670.0, strategy: 'Estándar Alto' },
-                'intrinsic-cherry': { sales: 246269, price: 9.55, clients: 34, volume: 25780.0, strategy: 'Core Volumen' },
-                'otros': { sales: 521164, price: 6.45, clients: 40, volume: 80780.0, strategy: 'Entrada/Commodity' }
-            }
-        };
-
-        // Complete Client Data
-        const clientData = [
-            { name: "BLACK GOLD", type: "multi", region: "asia", size: "large", total: 254693, fp: 125000, ccd: 129693 },
-            { name: "SPOT EUROPA", type: "ccd-only", region: "europe", size: "large", total: 211512, fp: 0, ccd: 211512 },
-            { name: "Equation LLC", type: "ccd-only", region: "north-america", size: "large", total: 132053, fp: 0, ccd: 132053 },
-            { name: "Onyx Coffee Lab", type: "ccd-only", region: "north-america", size: "medium", total: 68179, fp: 0, ccd: 68179 },
-            { name: "SHENZHEN GREATSHOT", type: "multi", region: "asia", size: "medium", total: 66318, fp: 35000, ccd: 31318 },
-            { name: "Irving Farm Coffee Roasters", type: "multi", region: "north-america", size: "medium", total: 65432, fp: 25000, ccd: 40432 },
-            { name: "Tim Wendelboe", type: "fp-only", region: "europe", size: "medium", total: 45678, fp: 45678, ccd: 0 },
-            { name: "Coffee Collective", type: "fp-only", region: "europe", size: "small", total: 12500, fp: 12500, ccd: 0 },
-            { name: "Blue Bottle Coffee", type: "multi", region: "north-america", size: "large", total: 89000, fp: 45000, ccd: 44000 }
-        ];
-
-        // Geographic distribution data
-        const geoDistribution = {
-            europe: { clients: 35, percentage: 35 },
-            asia: { clients: 30, percentage: 30 },
-            'north-america': { clients: 25, percentage: 25 },
-            others: { clients: 10, percentage: 10 }
-        };
-
-        // Professional color palette
+        // Chart Configuration
         const chartColors = {
-            primary: '#1a365d',
-            secondary: '#2c5282',
-            accent: '#3182ce',
-            success: '#38a169',
-            warning: '#d69e2e',
-            danger: '#e53e3e',
-            neutral: '#718096',
-            fp: '#1a365d',
-            ccd: '#38a169'
+            fp: '#2d5016',
+            ccd: '#6db33f',
+            accent: '#4a7c59',
+            neutral: '#7b8794',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444'
+        };
+
+        const chartDefaults = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: { size: 12, family: 'Inter' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#212529',
+                    bodyColor: '#616e7c',
+                    borderColor: '#e4e7eb',
+                    borderWidth: 1,
+                    cornerRadius: 8
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f5f7fa' },
+                    ticks: { color: '#616e7c', font: { family: 'Inter' } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#616e7c', font: { family: 'Inter' } }
+                }
+            }
         };
 
         // Tab Management
@@ -1473,232 +1156,590 @@
 
             // Add active class to clicked nav link
             event.target.classList.add('active');
+
+            // Load charts for the active tab
+            loadChartsForTab(tabId);
         }
 
-        // Real Filter Functions with Data Updates
-        function filterBrandData() {
-            const brandFilter = document.getElementById('brandFilter').value;
-            const seriesFilter = document.getElementById('seriesFilter').value;
-
-            updateBrandDisplay(brandFilter, seriesFilter);
+        function loadChartsForTab(tabId) {
+            switch(tabId) {
+                case 'overview':
+                    loadOverviewCharts();
+                    break;
+                case 'brands':
+                    loadBrandCharts();
+                    break;
+                case 'temporal':
+                    loadTemporalCharts();
+                    break;
+                case 'clients':
+                    loadClientCharts();
+                    break;
+                case 'projections':
+                    loadProjectionCharts();
+                    break;
+                case 'portfolio':
+                    loadPortfolioCharts();
+                    break;
+            }
         }
 
-        function updateBrandDisplay(brandFilter, seriesFilter) {
-            const fpTable = document.querySelector('.grid-2 .card:first-child table tbody');
-            const ccdTable = document.querySelector('.grid-2 .card:last-child table tbody');
-
-            // Clear existing rows
-            fpTable.innerHTML = '';
-            ccdTable.innerHTML = '';
-
-            // Filter and display Flying Pumas data
-            if (brandFilter === 'both' || brandFilter === 'fp') {
-                Object.entries(brandSeriesData.fp).forEach(([key, data]) => {
-                    if (seriesFilter === 'all' || seriesFilter === key) {
-                        const row = fpTable.insertRow();
-                        const seriesName = key.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-                        const badgeClass = data.price > 80 ? 'badge-warning' : data.price > 60 ? 'badge-success' : 'badge-info';
-                        row.innerHTML = `
-                            <td>${seriesName}</td>
-                            <td>$${data.sales.toLocaleString()}</td>
-                            <td>$${data.price.toFixed(2)}</td>
-                            <td>${data.clients}</td>
-                            <td><span class="badge ${badgeClass}">${data.strategy}</span></td>
-                        `;
+        // Chart Initialization Functions
+        function loadOverviewCharts() {
+            // Mix Chart
+            const mixCtx = document.getElementById('overviewMixChart')?.getContext('2d');
+            if (mixCtx) {
+                new Chart(mixCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Actual 2025', 'Óptimo 2026'],
+                        datasets: [
+                            {
+                                label: 'Flying Pumas',
+                                data: [33.4, 44.5],
+                                backgroundColor: chartColors.fp
+                            },
+                            {
+                                label: 'Creativa CCD',
+                                data: [66.6, 55.5],
+                                backgroundColor: chartColors.ccd
+                            }
+                        ]
+                    },
+                    options: {
+                        ...chartDefaults,
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true, max: 100 }
+                        }
                     }
                 });
             }
 
-            // Filter and display Creativa CCD data
-            if (brandFilter === 'both' || brandFilter === 'ccd') {
-                Object.entries(brandSeriesData.ccd).forEach(([key, data]) => {
-                    if (seriesFilter === 'all' || seriesFilter === key) {
-                        const row = ccdTable.insertRow();
-                        const seriesName = key.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-                        const badgeClass = data.price > 10 ? 'badge-info' : data.price > 8 ? 'badge-success' : 'badge-warning';
-                        row.innerHTML = `
-                            <td>${seriesName}</td>
-                            <td>$${data.sales.toLocaleString()}</td>
-                            <td>$${data.price.toFixed(2)}</td>
-                            <td>${data.clients}</td>
-                            <td><span class="badge ${badgeClass}">${data.strategy}</span></td>
-                        `;
+            // Price Evolution Chart
+            const priceCtx = document.getElementById('overviewPriceChart')?.getContext('2d');
+            if (priceCtx) {
+                new Chart(priceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['2022', '2023', '2024', '2025', '2026 Meta'],
+                        datasets: [{
+                            label: 'Precio Promedio Ponderado',
+                            data: [8.00, 7.62, 7.71, 11.33, 34.50],
+                            borderColor: chartColors.accent,
+                            backgroundColor: chartColors.accent + '20',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        ...chartDefaults,
+                        scales: {
+                            ...chartDefaults.scales,
+                            y: {
+                                ...chartDefaults.scales.y,
+                                ticks: {
+                                    ...chartDefaults.scales.y.ticks,
+                                    callback: function(value) {
+                                        return '$' + value.toFixed(2);
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             }
         }
 
-        function updateTemporalCharts() {
-            const periodFilter = document.getElementById('periodFilter').value;
-            const brandFilter = document.getElementById('temporalBrandFilter').value;
-            const metricFilter = document.getElementById('metricFilter').value;
-
-            updateTemporalDisplay(periodFilter, brandFilter, metricFilter);
-        }
-
-        function updateTemporalDisplay(period, brand, metric) {
-            const chartContainer = document.querySelector('#temporal .css-bar-chart');
-            if (!chartContainer) return;
-
-            let data = [];
-            let labels = [];
-
-            if (period === 'yearly') {
-                labels = ['2022', '2023', '2024', '2025', '2026 Meta'];
-                switch (metric) {
-                    case 'sales':
-                        if (brand === 'combined') {
-                            data = [280000, 320000, 370000, 1579070, 843000];
-                        } else if (brand === 'fp') {
-                            data = [0, 0, 0, 527885, 375000];
-                        } else if (brand === 'ccd') {
-                            data = [280000, 320000, 370000, 1051185, 468000];
-                        }
-                        break;
-                    case 'price':
-                        if (brand === 'combined') {
-                            data = [8.00, 7.62, 7.71, 11.33, 34.50];
-                        } else if (brand === 'fp') {
-                            data = [null, null, null, 67.58, 50.00];
-                        } else if (brand === 'ccd') {
-                            data = [8.00, 7.62, 7.71, 7.99, 15.00];
-                        }
-                        break;
-                }
+        function loadBrandCharts() {
+            // Flying Pumas Series Chart
+            const fpCtx = document.getElementById('fpSeriesChart')?.getContext('2d');
+            if (fpCtx) {
+                new Chart(fpCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Iconic', 'Washed', 'Premium Natural', 'Dynamic Cherry'],
+                        datasets: [{
+                            data: [4763, 168983, 243739, 11023],
+                            backgroundColor: ['#1a2f0d', chartColors.fp, chartColors.accent, '#8bc34a']
+                        }]
+                    },
+                    options: chartDefaults
+                });
             }
 
-            updateBarChart(chartContainer, labels, data, metric);
+            // Creativa CCD Series Chart
+            const ccdCtx = document.getElementById('ccdSeriesChart')?.getContext('2d');
+            if (ccdCtx) {
+                new Chart(ccdCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Splash', 'Dynamic Cherry', 'Intrinsic Cherry', 'Otros'],
+                        datasets: [{
+                            data: [72655, 207618, 246269, 521164],
+                            backgroundColor: [chartColors.ccd, '#8bc34a', '#4caf50', '#81c784']
+                        }]
+                    },
+                    options: chartDefaults
+                });
+            }
+
+            populateFilters();
         }
 
-        function updateBarChart(container, labels, data, metric) {
-            container.innerHTML = '';
-            const maxValue = Math.max(...data.filter(v => v !== null));
+        function loadTemporalCharts() {
+            initializeTemporalSalesChart();
+            initializeTemporalPriceChart();
+            initializeGrowthChart();
+        }
 
-            data.forEach((value, index) => {
-                if (value !== null) {
-                    const bar = document.createElement('div');
-                    bar.className = 'css-bar';
-                    const height = (value / maxValue) * 80;
-                    bar.style.height = `${height}%`;
-                    bar.style.background = `linear-gradient(to top, ${chartColors.primary}, ${chartColors.accent})`;
+        function initializeTemporalSalesChart() {
+            const ctx = document.getElementById('temporalSalesChart')?.getContext('2d');
+            if (!ctx) return;
 
-                    const label = document.createElement('span');
-                    label.style.transform = 'rotate(-90deg)';
-                    label.style.whiteSpace = 'nowrap';
-                    label.style.fontSize = '0.7rem';
-
-                    if (metric === 'sales') {
-                        label.textContent = `$${(value/1000)}K`;
-                    } else if (metric === 'price') {
-                        label.textContent = `$${value.toFixed(2)}`;
-                    } else {
-                        label.textContent = value.toLocaleString();
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026 (Meta)'],
+                    datasets: [
+                        {
+                            label: 'Creativa CCD',
+                            data: [280000, 320000, 370000, 1051185, 468000],
+                            borderColor: chartColors.ccd,
+                            backgroundColor: chartColors.ccd + '20',
+                            fill: false,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Flying Pumas',
+                            data: [0, 0, 0, 527885, 375000],
+                            borderColor: chartColors.fp,
+                            backgroundColor: chartColors.fp + '20',
+                            fill: false,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: {
+                            display: true,
+                            text: 'Flying Pumas inició en 2025 como estrategia premium complementaria'
+                        }
+                    },
+                    scales: {
+                        ...chartDefaults.scales,
+                        y: {
+                            ...chartDefaults.scales.y,
+                            ticks: {
+                                ...chartDefaults.scales.y.ticks,
+                                callback: function(value) {
+                                    return '$' + (value/1000) + 'K';
+                                }
+                            }
+                        }
                     }
-
-                    bar.appendChild(label);
-                    container.appendChild(bar);
                 }
             });
         }
 
-        function filterClientData() {
-            const segment = document.getElementById('clientSegmentFilter').value;
-            const region = document.getElementById('regionFilter').value;
-            const size = document.getElementById('sizeFilter').value;
+        function initializeTemporalPriceChart() {
+            const ctx = document.getElementById('temporalPriceChart')?.getContext('2d');
+            if (!ctx) return;
 
-            const filteredData = clientData.filter(client => {
-                const segmentMatch = segment === 'all' || client.type === segment;
-                const regionMatch = region === 'all' || client.region === region;
-                const sizeMatch = size === 'all' || client.size === size;
-                return segmentMatch && regionMatch && sizeMatch;
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026 (Meta)'],
+                    datasets: [
+                        {
+                            label: 'Creativa CCD ($/lb)',
+                            data: [8.00, 7.62, 7.71, 7.99, 15.00],
+                            borderColor: chartColors.ccd,
+                            backgroundColor: chartColors.ccd + '20',
+                            fill: false,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Flying Pumas ($/lb)',
+                            data: [null, null, null, 67.58, 50.00],
+                            borderColor: chartColors.fp,
+                            backgroundColor: chartColors.fp + '20',
+                            fill: false,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Promedio Ponderado ($/lb)',
+                            data: [8.00, 7.62, 7.71, 11.33, 34.50],
+                            borderColor: chartColors.accent,
+                            backgroundColor: chartColors.accent + '20',
+                            fill: false,
+                            tension: 0.3,
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: {
+                            display: true,
+                            text: 'Evolución hacia objetivo $34.50/lb promedio ponderado en 2026'
+                        }
+                    }
+                }
             });
-
-            updateClientTable(filteredData);
         }
 
-        function updateClientTable(data) {
-            const tbody = document.querySelector('#clientsDetailTable tbody');
-            tbody.innerHTML = '';
+        function initializeGrowthChart() {
+            const ctx = document.getElementById('growthChart')?.getContext('2d');
+            if (!ctx) return;
 
-            data.forEach(client => {
-                const row = document.createElement('tr');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2023 vs 2022', '2024 vs 2023', '2025 vs 2024', '2026 vs 2025 (Meta)'],
+                    datasets: [
+                        {
+                            label: 'Crecimiento Creativa CCD (%)',
+                            data: [14.3, 15.6, 184.1, -55.5],
+                            backgroundColor: chartColors.ccd
+                        },
+                        {
+                            label: 'Crecimiento Flying Pumas (%)',
+                            data: [null, null, null, -29.0],
+                            backgroundColor: chartColors.fp
+                        },
+                        {
+                            label: 'Crecimiento Total (%)',
+                            data: [14.3, 15.6, 326.8, -46.6],
+                            backgroundColor: chartColors.accent
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: {
+                            display: true,
+                            text: '2025: Lanzamiento FP | 2026: Rebalanceo estratégico hacia mix óptimo'
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadClientCharts() {
+            // Geographic distribution
+            const geoCtx = document.getElementById('geoDistributionChart')?.getContext('2d');
+            if (geoCtx) {
+                new Chart(geoCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Europa', 'Asia', 'América', 'Otros'],
+                        datasets: [{
+                            data: [35, 30, 25, 10],
+                            backgroundColor: [chartColors.fp, chartColors.ccd, chartColors.accent, chartColors.neutral]
+                        }]
+                    },
+                    options: chartDefaults
+                });
+            }
+
+            loadClientTable();
+        }
+
+        function loadProjectionCharts() {
+            const projCtx = document.getElementById('projectionScenariosChart')?.getContext('2d');
+            if (projCtx) {
+                new Chart(projCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Conservador', 'Objetivo', 'Optimista'],
+                        datasets: [
+                            { label: 'Flying Pumas', data: [300000, 375000, 450000], backgroundColor: chartColors.fp },
+                            { label: 'Creativa CCD', data: [400000, 468000, 500000], backgroundColor: chartColors.ccd }
+                        ]
+                    },
+                    options: {
+                        ...chartDefaults,
+                        scales: {
+                            x: { stacked: true },
+                            y: {
+                                stacked: true,
+                                ticks: { callback: value => '$' + (value/1000) + 'K' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function loadPortfolioCharts() {
+            initializePortfolioMixChart();
+            initializePriceStrategyChart();
+            initializeGapAnalysisChart();
+        }
+
+        function initializePortfolioMixChart() {
+            const ctx = document.getElementById('portfolioMixChart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Flying Pumas Actual (33.4%)', 'Creativa CCD Actual (66.6%)', 'Flying Pumas Óptimo (44.5%)', 'Creativa CCD Óptimo (55.5%)'],
+                    datasets: [
+                        {
+                            label: 'Mix Actual 2025',
+                            data: [33.4, 66.6, 0, 0],
+                            backgroundColor: [chartColors.fp, chartColors.ccd, 'transparent', 'transparent'],
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: {
+                            display: true,
+                            text: 'Rebalanceo Portfolio: Actual 33.4/66.6% → Óptimo 44.5/55.5%'
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializePriceStrategyChart() {
+            const ctx = document.getElementById('priceStrategyChart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Flying Pumas Actual ($67.58/lb)',
+                            data: [{ x: 7814, y: 67.58 }],
+                            backgroundColor: chartColors.fp,
+                            borderColor: chartColors.fp,
+                            pointRadius: 12
+                        },
+                        {
+                            label: 'Creativa CCD Actual ($7.99/lb)',
+                            data: [{ x: 131560, y: 7.99 }],
+                            backgroundColor: chartColors.ccd,
+                            borderColor: chartColors.ccd,
+                            pointRadius: 12
+                        },
+                        {
+                            label: 'Flying Pumas Meta 2026 ($50.00/lb)',
+                            data: [{ x: 7500, y: 50.00 }],
+                            backgroundColor: chartColors.fp + '60',
+                            borderColor: chartColors.fp,
+                            pointRadius: 10,
+                            borderDash: [5, 5]
+                        },
+                        {
+                            label: 'Creativa CCD Meta 2026 ($15.00/lb)',
+                            data: [{ x: 31200, y: 15.00 }],
+                            backgroundColor: chartColors.ccd + '60',
+                            borderColor: chartColors.ccd,
+                            pointRadius: 10,
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Volumen (KG)' },
+                            grid: { color: '#f5f7fa' },
+                            ticks: { color: '#616e7c' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Precio ($/lb)' },
+                            grid: { color: '#f5f7fa' },
+                            ticks: {
+                                color: '#616e7c',
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: {
+                            display: true,
+                            text: 'Estrategia de Convergencia: FP baja precios, CCD sube precios'
+                        },
+                        tooltip: {
+                            ...chartDefaults.plugins.tooltip,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.x.toLocaleString()}kg, $${context.parsed.y.toFixed(2)}/lb`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeGapAnalysisChart() {
+            const ctx = document.getElementById('gapAnalysisChart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Gap Actual\n($59.59/lb)', 'Gap Meta 2026\n($35.00/lb)', 'Zona Óptima\n($20-35/lb)'],
+                    datasets: [
+                        {
+                            label: 'Flying Pumas Mín',
+                            data: [37.74, 35.00, 20],
+                            backgroundColor: chartColors.fp + '40',
+                            borderColor: chartColors.fp,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Flying Pumas Máx',
+                            data: [90.02, 65.00, 35],
+                            backgroundColor: chartColors.fp,
+                            borderColor: chartColors.fp,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Creativa CCD Máx',
+                            data: [12.21, 18.00, 35],
+                            backgroundColor: chartColors.ccd,
+                            borderColor: chartColors.ccd,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: {
+                            display: true,
+                            text: 'Reducción del Gap: $59.59/lb → $35.00/lb mediante convergencia'
+                        }
+                    },
+                    scales: {
+                        ...chartDefaults.scales,
+                        y: {
+                            ...chartDefaults.scales.y,
+                            title: {
+                                display: true,
+                                text: 'Precio ($/lb)'
+                            },
+                            ticks: {
+                                ...chartDefaults.scales.y.ticks,
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Data Management Functions
+        function populateFilters() {
+            const seriesSelect = document.getElementById('seriesFilter');
+            if (seriesSelect) {
+                const fpSeries = ['Iconic Series', 'Washed Series', 'Premium Natural', 'Dynamic Cherry'];
+                const ccdSeries = ['Splash', 'Dynamic Cherry', 'Intrinsic Cherry', 'Otros'];
+
+                fpSeries.forEach(series => {
+                    const option = document.createElement('option');
+                    option.value = series.toLowerCase().replace(' ', '-');
+                    option.textContent = `FP: ${series}`;
+                    seriesSelect.appendChild(option);
+                });
+
+                ccdSeries.forEach(series => {
+                    const option = document.createElement('option');
+                    option.value = series.toLowerCase().replace(' ', '-');
+                    option.textContent = `CCD: ${series}`;
+                    seriesSelect.appendChild(option);
+                });
+            }
+        }
+
+        function loadClientTable() {
+            const tableBody = document.querySelector('#clientsDetailTable tbody');
+            if (!tableBody) return;
+
+            const clients = [
+                { name: 'BLACK GOLD', type: 'Multi-marca', total: 254693, fp: 125000, ccd: 129693, status: 'Activo' },
+                { name: 'SPOT EUROPA', type: 'Solo CCD', total: 211512, fp: 0, ccd: 211512, status: 'Oportunidad' },
+                { name: 'Equation LLC', type: 'Solo CCD', total: 132053, fp: 0, ccd: 132053, status: 'Oportunidad' },
+                { name: 'Onyx Coffee Lab', type: 'Solo CCD', total: 68179, fp: 0, ccd: 68179, status: 'Oportunidad' },
+                { name: 'SHENZHEN GREATSHOT', type: 'Multi-marca', total: 66318, fp: 35000, ccd: 31318, status: 'Activo' }
+            ];
+
+            tableBody.innerHTML = '';
+            clients.forEach(client => {
+                const row = tableBody.insertRow();
+                const statusClass = client.status === 'Oportunidad' ? 'badge-warning' : 'badge-success';
+                const typeClass = client.type === 'Multi-marca' ? 'badge-success' : 'badge-neutral';
                 row.innerHTML = `
-                    <td>${client.name}</td>
-                    <td>${client.type}</td>
+                    <td><strong>${client.name}</strong></td>
+                    <td><span class="badge ${typeClass}">${client.type}</span></td>
                     <td>$${client.total.toLocaleString()}</td>
                     <td>$${client.fp.toLocaleString()}</td>
                     <td>$${client.ccd.toLocaleString()}</td>
-                    <td><span class="badge badge-${client.type === 'multi' ? 'success' : client.type === 'fp-only' ? 'info' : 'warning'}">${client.type === 'multi' ? 'Activo' : client.type === 'fp-only' ? 'Premium' : 'Oportunidad'}</span></td>
+                    <td><span class="badge ${statusClass}">${client.status}</span></td>
                 `;
-                tbody.appendChild(row);
             });
+        }
+
+        // Filter Functions
+        function filterBrandData() {
+            const brandFilter = document.getElementById('brandFilter')?.value;
+            console.log('Filtering brand data for:', brandFilter);
+            // Implementation would update charts based on filter
+        }
+
+        function updateTemporalCharts() {
+            const period = document.getElementById('periodFilter')?.value;
+            const brand = document.getElementById('temporalBrandFilter')?.value;
+            const metric = document.getElementById('metricFilter')?.value;
+            console.log('Updating temporal charts:', {period, brand, metric});
+            // Implementation would update charts based on filters
+        }
+
+        function filterClientData() {
+            const segment = document.getElementById('clientSegmentFilter')?.value;
+            const region = document.getElementById('regionFilter')?.value;
+            const size = document.getElementById('sizeFilter')?.value;
+            console.log('Filtering client data:', {segment, region, size});
+            // Implementation would filter client table and charts
         }
 
         // Export Functions
         function exportBrandData() {
-            const csvContent = "data:text/csv;charset=utf-8," +
-                "Serie,Ventas,Precio/lb,Clientes,Estrategia\n" +
-                "Iconic Series,$4763,$90.02,2,Ultra-Premium exclusivo\n" +
-                "Washed Series,$168983,$85.76,21,Premium Alto establecido\n" +
-                "Premium Natural,$243739,$76.42,31,Core Premium (principal)\n" +
-                "Dynamic Cherry,$11023,$37.74,3,Premium Accesible";
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "brand_analysis.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            alert('Exportando datos de marcas...');
         }
 
         function exportClientData() {
-            const csvContent = "data:text/csv;charset=utf-8," +
-                "Cliente,Tipo,Total,Flying Pumas,Creativa CCD,Region,Tamaño\n" +
-                clientData.map(client =>
-                    `${client.name},${client.type},$${client.total},$${client.fp},$${client.ccd},${client.region},${client.size}`
-                ).join("\n");
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "client_analysis.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            alert('Exportando datos de clientes...');
         }
 
-        // Initialize all components
+        // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            updateClientTable(clientData);
-            filterBrandData(); // Initialize brand tables
-            updateTemporalCharts(); // Initialize temporal charts
-
-            // Add interactive tooltips
-            document.querySelectorAll('.data-point').forEach(point => {
-                point.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.5)';
-                    this.style.zIndex = '10';
-                });
-                point.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                    this.style.zIndex = '1';
-                });
-            });
-        });
-
-        // Add smooth scrolling to anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+            loadOverviewCharts();
         });
     </script>
 </body>
