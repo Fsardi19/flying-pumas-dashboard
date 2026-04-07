@@ -258,6 +258,18 @@
             padding: 1rem;
         }
 
+        /* Professional Chart Colors */
+        :root {
+            --chart-primary: #1a365d;
+            --chart-secondary: #2c5282;
+            --chart-accent: #3182ce;
+            --chart-success: #38a169;
+            --chart-warning: #d69e2e;
+            --chart-danger: #e53e3e;
+            --chart-neutral: #718096;
+            --chart-light: #edf2f7;
+        }
+
         /* CSS-based Chart Visualizations */
         .css-pie-chart {
             width: 200px;
@@ -265,19 +277,22 @@
             border-radius: 50%;
             margin: 0 auto;
             position: relative;
+            box-shadow: var(--fp-shadow-sm);
         }
 
         .css-bar-chart {
             display: flex;
             align-items: end;
-            height: 250px;
+            height: 280px;
             gap: 1rem;
-            padding: 1rem;
+            padding: 1.5rem;
+            background: var(--fp-neutral-50);
+            border-radius: var(--fp-radius-md);
         }
 
         .css-bar {
             flex: 1;
-            background: var(--fp-accent);
+            background: var(--chart-primary);
             border-radius: var(--fp-radius-sm);
             display: flex;
             align-items: end;
@@ -286,13 +301,54 @@
             color: white;
             font-weight: 600;
             font-size: 0.75rem;
+            position: relative;
+            box-shadow: var(--fp-shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .css-bar:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--fp-shadow-md);
         }
 
         .css-line-chart {
             position: relative;
             height: 200px;
-            background: linear-gradient(to right, transparent 0%, rgba(109, 179, 63, 0.1) 50%, rgba(109, 179, 63, 0.3) 100%);
-            border-radius: var(--fp-radius-sm);
+            background: var(--fp-neutral-50);
+            border-radius: var(--fp-radius-md);
+            padding: 1rem;
+            box-shadow: var(--fp-shadow-sm);
+        }
+
+        .price-evolution-line {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(to right,
+                var(--chart-danger) 0%,
+                var(--chart-warning) 25%,
+                var(--chart-accent) 50%,
+                var(--chart-success) 100%);
+            border-radius: 2px;
+            top: 50%;
+            left: 1rem;
+            right: 1rem;
+            transform: translateY(-50%);
+        }
+
+        /* Interactive Elements */
+        .filter-active {
+            background: var(--fp-accent) !important;
+            color: white !important;
+        }
+
+        .data-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--chart-primary);
+            border: 2px solid white;
+            box-shadow: var(--fp-shadow-sm);
         }
 
         /* Controls */
@@ -526,17 +582,18 @@
                     </div>
                     <div class="chart-container">
                         <div class="css-bar-chart">
-                            <div class="css-bar" style="height: 33.4%; background: #2d5016;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">FP 33.4%</span>
+                            <div class="css-bar" style="height: 33.4%; background: linear-gradient(135deg, var(--chart-primary) 0%, var(--chart-secondary) 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">FP Actual<br>33.4%</span>
                             </div>
-                            <div class="css-bar" style="height: 66.6%; background: #6db33f;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">CCD 66.6%</span>
+                            <div class="css-bar" style="height: 66.6%; background: linear-gradient(135deg, var(--chart-success) 0%, var(--chart-accent) 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">CCD Actual<br>66.6%</span>
                             </div>
-                            <div class="css-bar" style="height: 44.5%; background: #2d5016;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">FP Ópt 44.5%</span>
+                            <div style="width: 2rem; display: flex; align-items: center; justify-content: center; color: var(--fp-neutral-600); font-weight: 600; transform: rotate(90deg);">vs</div>
+                            <div class="css-bar" style="height: 44.5%; background: linear-gradient(135deg, var(--chart-primary) 0%, var(--chart-secondary) 100%); opacity: 0.8; border: 2px dashed var(--chart-primary);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">FP Óptimo<br>44.5%</span>
                             </div>
-                            <div class="css-bar" style="height: 55.5%; background: #6db33f;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">CCD Ópt 55.5%</span>
+                            <div class="css-bar" style="height: 55.5%; background: linear-gradient(135deg, var(--chart-success) 0%, var(--chart-accent) 100%); opacity: 0.8; border: 2px dashed var(--chart-success);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">CCD Óptimo<br>55.5%</span>
                             </div>
                         </div>
                     </div>
@@ -548,14 +605,21 @@
                         <p class="card-subtitle">Proyección hacia meta $34.50/lb</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-line-chart" style="background: linear-gradient(to right,
-                            rgba(109, 179, 63, 0.1) 0%,
-                            rgba(109, 179, 63, 0.2) 25%,
-                            rgba(109, 179, 63, 0.3) 50%,
-                            rgba(109, 179, 63, 0.5) 75%,
-                            rgba(109, 179, 63, 0.8) 100%);">
-                            <div style="position: absolute; bottom: 10px; left: 10px; font-weight: 600;">$8.00 (2022)</div>
-                            <div style="position: absolute; top: 10px; right: 10px; font-weight: 600; color: var(--fp-primary);">$34.50 (Meta 2026)</div>
+                        <div class="css-line-chart">
+                            <div class="price-evolution-line"></div>
+                            <!-- Price points -->
+                            <div class="data-point" style="left: 5%; bottom: 20%; background: var(--chart-danger);" title="2022: $8.00"></div>
+                            <div class="data-point" style="left: 25%; bottom: 18%; background: var(--chart-danger);" title="2023: $7.62"></div>
+                            <div class="data-point" style="left: 45%; bottom: 19%; background: var(--chart-warning);" title="2024: $7.71"></div>
+                            <div class="data-point" style="left: 65%; bottom: 35%; background: var(--chart-accent);" title="2025: $11.33"></div>
+                            <div class="data-point" style="left: 85%; bottom: 85%; background: var(--chart-success);" title="Meta 2026: $34.50"></div>
+
+                            <!-- Labels -->
+                            <div style="position: absolute; bottom: 5px; left: 5%; font-size: 0.7rem; font-weight: 600; color: var(--chart-danger);">2022<br>$8.00</div>
+                            <div style="position: absolute; bottom: 5px; left: 25%; font-size: 0.7rem; font-weight: 600; color: var(--chart-danger);">2023<br>$7.62</div>
+                            <div style="position: absolute; bottom: 5px; left: 45%; font-size: 0.7rem; font-weight: 600; color: var(--chart-warning);">2024<br>$7.71</div>
+                            <div style="position: absolute; bottom: 5px; left: 65%; font-size: 0.7rem; font-weight: 600; color: var(--chart-accent);">2025<br>$11.33</div>
+                            <div style="position: absolute; top: 5px; right: 15%; font-size: 0.8rem; font-weight: 700; color: var(--chart-success); text-align: center;">Meta 2026<br>$34.50/lb</div>
                         </div>
                     </div>
                 </div>
@@ -597,6 +661,13 @@
                     <label class="control-label">Serie/Producto</label>
                     <select class="control-input" id="seriesFilter" onchange="filterBrandData()">
                         <option value="all">Todas las Series</option>
+                        <option value="iconic-series">FP: Iconic Series</option>
+                        <option value="washed-series">FP: Washed Series</option>
+                        <option value="premium-natural">FP: Premium Natural</option>
+                        <option value="dynamic-cherry">FP: Dynamic Cherry</option>
+                        <option value="splash">CCD: Splash</option>
+                        <option value="intrinsic-cherry">CCD: Intrinsic Cherry</option>
+                        <option value="otros">CCD: Otros</option>
                     </select>
                 </div>
                 <button class="btn btn-secondary" onclick="exportBrandData()">Exportar Datos</button>
@@ -611,11 +682,11 @@
                     </div>
                     <div class="chart-container">
                         <div class="css-pie-chart" style="background: conic-gradient(
-                            #1a2f0d 0deg 8deg,
-                            #2d5016 8deg 120deg,
-                            #4a7c59 120deg 280deg,
-                            #8bc34a 280deg 360deg
-                        );">
+                            var(--chart-primary) 0deg 15deg,
+                            var(--chart-secondary) 15deg 135deg,
+                            var(--chart-accent) 135deg 300deg,
+                            var(--chart-success) 300deg 360deg
+                        ); box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1rem; border-radius: 50%; font-weight: 600;">FP Series</div>
                         </div>
                     </div>
@@ -785,21 +856,21 @@
                         <p class="card-subtitle">2022-2024: Solo Creativa | 2025+: Estrategia dual</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-bar-chart">
-                            <div class="css-bar" style="height: 18%; background: #6db33f;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">$280K</span>
+                        <div class="css-bar-chart" id="temporalSalesChart">
+                            <div class="css-bar" style="height: 18%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-accent) 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2022<br>$280K</span>
                             </div>
-                            <div class="css-bar" style="height: 21%; background: #6db33f;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">$320K</span>
+                            <div class="css-bar" style="height: 21%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-accent) 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2023<br>$320K</span>
                             </div>
-                            <div class="css-bar" style="height: 24%; background: #6db33f;">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">$370K</span>
+                            <div class="css-bar" style="height: 24%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-accent) 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2024<br>$370K</span>
                             </div>
-                            <div class="css-bar" style="height: 100%; background: linear-gradient(to top, #6db33f 0%, #6db33f 67%, #2d5016 67%, #2d5016 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">$1.58M</span>
+                            <div class="css-bar" style="height: 100%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-success) 67%, var(--chart-primary) 67%, var(--chart-primary) 100%);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 700; font-size: 0.8rem;">2025<br>$1.58M<br>Dual</span>
                             </div>
-                            <div class="css-bar" style="height: 53%; background: linear-gradient(to top, #6db33f 0%, #6db33f 55%, #2d5016 55%, #2d5016 100%);">
-                                <span style="transform: rotate(-90deg); white-space: nowrap;">$843K</span>
+                            <div class="css-bar" style="height: 53%; background: linear-gradient(to top, var(--chart-success) 0%, var(--chart-success) 55%, var(--chart-primary) 55%, var(--chart-primary) 100%); opacity: 0.8; border: 2px dashed var(--chart-primary);">
+                                <span style="transform: rotate(-90deg); white-space: nowrap; font-weight: 600;">2026<br>$843K<br>Meta</span>
                             </div>
                         </div>
                     </div>
@@ -811,17 +882,37 @@
                         <p class="card-subtitle">Convergencia hacia $34.50/lb promedio</p>
                     </div>
                     <div class="chart-container">
-                        <div class="css-line-chart" style="background: linear-gradient(45deg,
-                            rgba(109, 179, 63, 0.1) 0%,
-                            rgba(109, 179, 63, 0.2) 25%,
-                            rgba(109, 179, 63, 0.4) 50%,
-                            rgba(45, 80, 22, 0.3) 75%,
-                            rgba(45, 80, 22, 0.6) 100%);">
-                            <div style="position: absolute; bottom: 10px; left: 5px; font-weight: 600; font-size: 0.75rem;">2022: $8.00</div>
-                            <div style="position: absolute; bottom: 30px; left: 20%; font-weight: 600; font-size: 0.75rem;">2023: $7.62</div>
-                            <div style="position: absolute; bottom: 50px; left: 40%; font-weight: 600; font-size: 0.75rem;">2024: $7.71</div>
-                            <div style="position: absolute; top: 50px; left: 60%; font-weight: 600; font-size: 0.75rem; color: var(--fp-primary);">2025: $11.33</div>
-                            <div style="position: absolute; top: 10px; right: 10px; font-weight: 600; color: var(--fp-primary);">Meta 2026: $34.50</div>
+                        <div class="css-line-chart" id="temporalPriceChart">
+                            <!-- Price evolution curves -->
+                            <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;">
+                                <!-- CCD price line (stable then rising) -->
+                                <path d="M 60 160 Q 180 155 280 150 Q 320 145 340 80"
+                                      stroke="var(--chart-success)" stroke-width="3" fill="none" stroke-dasharray="5,5"/>
+                                <!-- FP price line (high then converging) -->
+                                <path d="M 240 40 Q 280 45 320 60"
+                                      stroke="var(--chart-primary)" stroke-width="3" fill="none"/>
+                                <!-- Combined average -->
+                                <path d="M 60 160 Q 150 155 240 120 Q 280 100 320 70"
+                                      stroke="var(--chart-accent)" stroke-width="4" fill="none"/>
+                            </svg>
+
+                            <!-- Data points with exact values -->
+                            <div class="data-point" style="left: 15%; bottom: 20%; background: var(--chart-success);" title="CCD 2022: $8.00"></div>
+                            <div class="data-point" style="left: 25%; bottom: 22%; background: var(--chart-success);" title="CCD 2023: $7.62"></div>
+                            <div class="data-point" style="left: 35%; bottom: 21%; background: var(--chart-success);" title="CCD 2024: $7.71"></div>
+                            <div class="data-point" style="left: 50%; bottom: 25%; background: var(--chart-success);" title="CCD 2025: $7.99"></div>
+                            <div class="data-point" style="left: 80%; bottom: 60%; background: var(--chart-success);" title="CCD 2026: $15.00"></div>
+
+                            <div class="data-point" style="left: 50%; bottom: 80%; background: var(--chart-primary);" title="FP 2025: $67.58"></div>
+                            <div class="data-point" style="left: 80%; bottom: 70%; background: var(--chart-primary);" title="FP 2026: $50.00"></div>
+
+                            <div class="data-point" style="left: 50%; bottom: 40%; background: var(--chart-accent);" title="Promedio 2025: $11.33"></div>
+                            <div class="data-point" style="left: 80%; bottom: 65%; background: var(--chart-accent);" title="Meta 2026: $34.50"></div>
+
+                            <!-- Labels -->
+                            <div style="position: absolute; bottom: 5px; left: 15%; font-size: 0.7rem; font-weight: 600; color: var(--chart-success);">CCD: $8→$15</div>
+                            <div style="position: absolute; top: 20%; right: 20%; font-size: 0.7rem; font-weight: 600; color: var(--chart-primary);">FP: $67→$50</div>
+                            <div style="position: absolute; top: 5px; right: 5%; font-size: 0.8rem; font-weight: 700; color: var(--chart-accent);">Convergencia<br>$34.50/lb</div>
                         </div>
                     </div>
                 </div>
@@ -1317,14 +1408,55 @@
             }
         };
 
-        // Client Data
+        // Complete Brand Series Data
+        const brandSeriesData = {
+            fp: {
+                'iconic-series': { sales: 4763, price: 90.02, clients: 2, volume: 52.9, strategy: 'Ultra-Premium exclusivo' },
+                'washed-series': { sales: 168983, price: 85.76, clients: 21, volume: 1970.3, strategy: 'Premium Alto establecido' },
+                'premium-natural': { sales: 243739, price: 76.42, clients: 31, volume: 3190.1, strategy: 'Core Premium (principal)' },
+                'dynamic-cherry': { sales: 11023, price: 37.74, clients: 3, volume: 292.1, strategy: 'Premium Accesible' }
+            },
+            ccd: {
+                'splash': { sales: 72655, price: 12.21, clients: 21, volume: 5950.0, strategy: 'Tope Creativa' },
+                'dynamic-cherry': { sales: 207618, price: 11.12, clients: 37, volume: 18670.0, strategy: 'Estándar Alto' },
+                'intrinsic-cherry': { sales: 246269, price: 9.55, clients: 34, volume: 25780.0, strategy: 'Core Volumen' },
+                'otros': { sales: 521164, price: 6.45, clients: 40, volume: 80780.0, strategy: 'Entrada/Commodity' }
+            }
+        };
+
+        // Complete Client Data
         const clientData = [
+            { name: "BLACK GOLD", type: "multi", region: "asia", size: "large", total: 254693, fp: 125000, ccd: 129693 },
             { name: "SPOT EUROPA", type: "ccd-only", region: "europe", size: "large", total: 211512, fp: 0, ccd: 211512 },
             { name: "Equation LLC", type: "ccd-only", region: "north-america", size: "large", total: 132053, fp: 0, ccd: 132053 },
-            { name: "Onyx Coffee Lab", type: "multi", region: "north-america", size: "medium", total: 78179, fp: 10000, ccd: 68179 },
+            { name: "Onyx Coffee Lab", type: "ccd-only", region: "north-america", size: "medium", total: 68179, fp: 0, ccd: 68179 },
+            { name: "SHENZHEN GREATSHOT", type: "multi", region: "asia", size: "medium", total: 66318, fp: 35000, ccd: 31318 },
             { name: "Irving Farm Coffee Roasters", type: "multi", region: "north-america", size: "medium", total: 65432, fp: 25000, ccd: 40432 },
-            { name: "Tim Wendelboe", type: "fp-only", region: "europe", size: "medium", total: 45678, fp: 45678, ccd: 0 }
+            { name: "Tim Wendelboe", type: "fp-only", region: "europe", size: "medium", total: 45678, fp: 45678, ccd: 0 },
+            { name: "Coffee Collective", type: "fp-only", region: "europe", size: "small", total: 12500, fp: 12500, ccd: 0 },
+            { name: "Blue Bottle Coffee", type: "multi", region: "north-america", size: "large", total: 89000, fp: 45000, ccd: 44000 }
         ];
+
+        // Geographic distribution data
+        const geoDistribution = {
+            europe: { clients: 35, percentage: 35 },
+            asia: { clients: 30, percentage: 30 },
+            'north-america': { clients: 25, percentage: 25 },
+            others: { clients: 10, percentage: 10 }
+        };
+
+        // Professional color palette
+        const chartColors = {
+            primary: '#1a365d',
+            secondary: '#2c5282',
+            accent: '#3182ce',
+            success: '#38a169',
+            warning: '#d69e2e',
+            danger: '#e53e3e',
+            neutral: '#718096',
+            fp: '#1a365d',
+            ccd: '#38a169'
+        };
 
         // Tab Management
         function showTab(tabId) {
@@ -1343,19 +1475,130 @@
             event.target.classList.add('active');
         }
 
-        // Filter Functions
+        // Real Filter Functions with Data Updates
         function filterBrandData() {
             const brandFilter = document.getElementById('brandFilter').value;
-            console.log('Filtering brands:', brandFilter);
-            // Filter logic here
+            const seriesFilter = document.getElementById('seriesFilter').value;
+
+            updateBrandDisplay(brandFilter, seriesFilter);
+        }
+
+        function updateBrandDisplay(brandFilter, seriesFilter) {
+            const fpTable = document.querySelector('.grid-2 .card:first-child table tbody');
+            const ccdTable = document.querySelector('.grid-2 .card:last-child table tbody');
+
+            // Clear existing rows
+            fpTable.innerHTML = '';
+            ccdTable.innerHTML = '';
+
+            // Filter and display Flying Pumas data
+            if (brandFilter === 'both' || brandFilter === 'fp') {
+                Object.entries(brandSeriesData.fp).forEach(([key, data]) => {
+                    if (seriesFilter === 'all' || seriesFilter === key) {
+                        const row = fpTable.insertRow();
+                        const seriesName = key.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const badgeClass = data.price > 80 ? 'badge-warning' : data.price > 60 ? 'badge-success' : 'badge-info';
+                        row.innerHTML = `
+                            <td>${seriesName}</td>
+                            <td>$${data.sales.toLocaleString()}</td>
+                            <td>$${data.price.toFixed(2)}</td>
+                            <td>${data.clients}</td>
+                            <td><span class="badge ${badgeClass}">${data.strategy}</span></td>
+                        `;
+                    }
+                });
+            }
+
+            // Filter and display Creativa CCD data
+            if (brandFilter === 'both' || brandFilter === 'ccd') {
+                Object.entries(brandSeriesData.ccd).forEach(([key, data]) => {
+                    if (seriesFilter === 'all' || seriesFilter === key) {
+                        const row = ccdTable.insertRow();
+                        const seriesName = key.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const badgeClass = data.price > 10 ? 'badge-info' : data.price > 8 ? 'badge-success' : 'badge-warning';
+                        row.innerHTML = `
+                            <td>${seriesName}</td>
+                            <td>$${data.sales.toLocaleString()}</td>
+                            <td>$${data.price.toFixed(2)}</td>
+                            <td>${data.clients}</td>
+                            <td><span class="badge ${badgeClass}">${data.strategy}</span></td>
+                        `;
+                    }
+                });
+            }
         }
 
         function updateTemporalCharts() {
             const periodFilter = document.getElementById('periodFilter').value;
             const brandFilter = document.getElementById('temporalBrandFilter').value;
             const metricFilter = document.getElementById('metricFilter').value;
-            console.log('Updating temporal charts:', { periodFilter, brandFilter, metricFilter });
-            // Update logic here
+
+            updateTemporalDisplay(periodFilter, brandFilter, metricFilter);
+        }
+
+        function updateTemporalDisplay(period, brand, metric) {
+            const chartContainer = document.querySelector('#temporal .css-bar-chart');
+            if (!chartContainer) return;
+
+            let data = [];
+            let labels = [];
+
+            if (period === 'yearly') {
+                labels = ['2022', '2023', '2024', '2025', '2026 Meta'];
+                switch (metric) {
+                    case 'sales':
+                        if (brand === 'combined') {
+                            data = [280000, 320000, 370000, 1579070, 843000];
+                        } else if (brand === 'fp') {
+                            data = [0, 0, 0, 527885, 375000];
+                        } else if (brand === 'ccd') {
+                            data = [280000, 320000, 370000, 1051185, 468000];
+                        }
+                        break;
+                    case 'price':
+                        if (brand === 'combined') {
+                            data = [8.00, 7.62, 7.71, 11.33, 34.50];
+                        } else if (brand === 'fp') {
+                            data = [null, null, null, 67.58, 50.00];
+                        } else if (brand === 'ccd') {
+                            data = [8.00, 7.62, 7.71, 7.99, 15.00];
+                        }
+                        break;
+                }
+            }
+
+            updateBarChart(chartContainer, labels, data, metric);
+        }
+
+        function updateBarChart(container, labels, data, metric) {
+            container.innerHTML = '';
+            const maxValue = Math.max(...data.filter(v => v !== null));
+
+            data.forEach((value, index) => {
+                if (value !== null) {
+                    const bar = document.createElement('div');
+                    bar.className = 'css-bar';
+                    const height = (value / maxValue) * 80;
+                    bar.style.height = `${height}%`;
+                    bar.style.background = `linear-gradient(to top, ${chartColors.primary}, ${chartColors.accent})`;
+
+                    const label = document.createElement('span');
+                    label.style.transform = 'rotate(-90deg)';
+                    label.style.whiteSpace = 'nowrap';
+                    label.style.fontSize = '0.7rem';
+
+                    if (metric === 'sales') {
+                        label.textContent = `$${(value/1000)}K`;
+                    } else if (metric === 'price') {
+                        label.textContent = `$${value.toFixed(2)}`;
+                    } else {
+                        label.textContent = value.toLocaleString();
+                    }
+
+                    bar.appendChild(label);
+                    container.appendChild(bar);
+                }
+            });
         }
 
         function filterClientData() {
@@ -1425,9 +1668,37 @@
             document.body.removeChild(link);
         }
 
-        // Initialize
+        // Initialize all components
         document.addEventListener('DOMContentLoaded', function() {
             updateClientTable(clientData);
+            filterBrandData(); // Initialize brand tables
+            updateTemporalCharts(); // Initialize temporal charts
+
+            // Add interactive tooltips
+            document.querySelectorAll('.data-point').forEach(point => {
+                point.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.5)';
+                    this.style.zIndex = '10';
+                });
+                point.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.zIndex = '1';
+                });
+            });
+        });
+
+        // Add smooth scrolling to anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
     </script>
 </body>
