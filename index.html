@@ -1113,15 +1113,23 @@ function renderPlan() {
         document.getElementById('meta-bar').style.background = pct >= 100 ? '#07332f' : pct >= 85 ? '#84faa1' : pct >= 70 ? '#ffc836' : '#c3846f';
         document.getElementById('meta-pct').textContent = pct.toFixed(1) + '% meta';
 
-        // Insight dinámico
-        let insight = '';
-        const ocPct = (dealsSum / meta) * 100;
-        const dealsCount = document.querySelectorAll('.deal-toggle:checked').length;
+        // Insight dinámico — concatenación (NO template literal por conflicto con scope outer)
+        var insight = '';
+        var ocPct = (dealsSum / meta) * 100;
+        var dealsCount = document.querySelectorAll('.deal-toggle:checked').length;
+        var revK = Math.round(revenue / 1000);
+        var pctTxt = pct.toFixed(0);
+        var precioTxt = precio.toFixed(2);
+        var pxReqTxt = px_req.toFixed(2);
         if (cajas <= 330) {
-          if (precio >= 46) insight = `Con ${cajas} cajas a $${precio.toFixed(2)}/lb llegamos a $${Math.round(revenue/1000)}K — ${pct.toFixed(0)}% de meta. ${dealsSum > 0 ? 'OC firmadas (' + dealsCount + ' deals) cubren ' + ocPct.toFixed(0) + '% de meta. Por cerrar: $' + Math.round(porCerrar/1000) + 'K (' + (100-ocPct).toFixed(0) + '%).' : ''}`;
-          else insight = `🚨 Con ${cajas} cajas a $${precio.toFixed(2)}/lb solo llegamos a $${Math.round(revenue/1000)}K = ${pct.toFixed(0)}% meta. Necesitamos $${px_req.toFixed(2)}/lb (subir +${(px_req-precio).toFixed(2)}/lb) o más cajas.`;
+          if (precio >= 46) {
+            insight = 'Con ' + cajas + ' cajas a $' + precioTxt + '/lb llegamos a $' + revK + 'K = ' + pctTxt + '% de meta.';
+            if (dealsSum > 0) insight += ' OC firmadas (' + dealsCount + ' deals) cubren ' + ocPct.toFixed(0) + '% de meta. Por cerrar: $' + Math.round(porCerrar/1000) + 'K.';
+          } else {
+            insight = '🚨 Con ' + cajas + ' cajas a $' + precioTxt + '/lb solo llegamos a $' + revK + 'K = ' + pctTxt + '% meta. Necesitamos $' + pxReqTxt + '/lb (subir +$' + (px_req-precio).toFixed(2) + '/lb) o más cajas.';
+          }
         } else {
-          insight = `Con ${cajas} cajas a $${precio.toFixed(2)}/lb tenemos $${Math.round(revenue/1000)}K (${pct.toFixed(0)}% meta). Si confirmamos ${cajas} cajas (vs 330 esperado Joel) podemos bajar precio a $${px_req.toFixed(2)}/lb manteniendo meta.`;
+          insight = 'Con ' + cajas + ' cajas a $' + precioTxt + '/lb tenemos $' + revK + 'K (' + pctTxt + '% meta). Si confirmamos ' + cajas + ' cajas (vs 330 esperado Joel) podemos bajar precio a $' + pxReqTxt + '/lb manteniendo meta.';
         }
         document.getElementById('sens-insight-text').textContent = insight;
       }
