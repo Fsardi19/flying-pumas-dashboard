@@ -1121,18 +1121,132 @@ function openDrawer(clientName) {
 
   let html = '';
 
-  // PERFIL (Research)
+  // PERFIL (Research) — soporta schema viejo plano y nuevo anidado
   if (research) {
-    html += `<div class="drawer-section">
-      <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Perfil del cliente</p>
-      <div class="space-y-2 text-sm">
-        ${research.tipo_negocio ? `<p><strong class="text-fp-700">Tipo:</strong> ${research.tipo_negocio}</p>` : ''}
-        ${research.tamaño_estimado ? `<p><strong class="text-fp-700">Tamaño:</strong> ${research.tamaño_estimado}</p>` : ''}
-        ${research.perfil_compra ? `<p><strong class="text-fp-700">Perfil compra:</strong> ${research.perfil_compra}</p>` : ''}
-        ${research.website && research.website !== '—' ? `<p><strong class="text-fp-700">Website:</strong> <a href="${research.website.startsWith('http') ? research.website : 'https://' + research.website.replace(/^https?:\/\//, '')}" target="_blank" class="text-fp-500 hover:underline break-all">${research.website}</a></p>` : ''}
-      </div>
-      ${research.posicion_mercado ? `<div class="mt-3 p-3 bg-fp-300/15 rounded text-xs text-fp-700"><strong>Posición:</strong> ${research.posicion_mercado}</div>` : ''}
-    </div>`;
+    // ALERTA verificación pendiente
+    if (research._alerta_verificacion) {
+      html += `<div class="drawer-section" style="background:linear-gradient(135deg,rgba(255,200,54,0.18),rgba(195,132,111,0.12)); border-left:4px solid #ffc836;">
+        <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#6b4d00;">⚠️ Alerta de verificación</p>
+        <p class="text-xs text-slate-800">${research._alerta_verificacion}</p>
+      </div>`;
+    }
+
+    // Categorización VERDE/AMARILLO/ROJO destacada
+    if (research.categorizacion_final) {
+      const catCls = research.categorizacion_final.includes('VERDE') ? 'bg-emerald-100 text-emerald-800' : research.categorizacion_final.includes('AMARILLO') ? 'bg-amber-100 text-amber-800' : research.categorizacion_final.includes('ROJO') ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-700';
+      html += `<div class="drawer-section">
+        <span class="text-xs px-3 py-1 rounded-full font-bold ${catCls}">${research.categorizacion_final}</span>
+        ${research.potencial_2026?.score_1_10 ? `<span class="ml-2 text-xs text-slate-500">Score: <strong class="text-fp-700">${research.potencial_2026.score_1_10}/10</strong></span>` : ''}
+        ${research.potencial_2026?.tier_sugerido ? `<span class="ml-2 text-xs text-slate-500">Tier sugerido: <strong class="text-fp-700">${research.potencial_2026.tier_sugerido}</strong></span>` : ''}
+      </div>`;
+    }
+
+    // PERFIL — schema nuevo (anidado) o viejo (plano)
+    const ubic = research.ubicacion || {};
+    const tam = research.tamaño || {};
+    const tipo = ubic.tipo || research.tipo_negocio || '';
+    const url = ubic.url_oficial || research.website || '';
+    const ciudad_pais = [ubic.ciudad, ubic.pais].filter(Boolean).join(', ');
+    const reputacion = tam.reputacion || research.posicion_mercado || '';
+    const tamano = tam.revenue_anual_estimado_usd || research.tamaño_estimado || '';
+    const tiendas = tam.tiendas_locations !== undefined ? tam.tiendas_locations : null;
+
+    if (tipo || ciudad_pais || reputacion) {
+      html += `<div class="drawer-section">
+        <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Perfil del cliente</p>
+        <div class="space-y-1.5 text-sm">
+          ${tipo ? `<p><strong class="text-fp-700">Tipo:</strong> ${tipo}</p>` : ''}
+          ${ciudad_pais ? `<p><strong class="text-fp-700">Ubicación:</strong> ${ciudad_pais}</p>` : ''}
+          ${tiendas !== null && tiendas !== '' ? `<p><strong class="text-fp-700">Tiendas:</strong> ${tiendas}</p>` : ''}
+          ${tamano ? `<p><strong class="text-fp-700">Revenue est.:</strong> ${tamano}</p>` : ''}
+          ${tam.volumen_estimado_kg_año ? `<p><strong class="text-fp-700">Volumen est.:</strong> ${tam.volumen_estimado_kg_año} kg/año</p>` : ''}
+          ${ubic.activo_2026 ? `<p><strong class="text-fp-700">Activo 2026:</strong> ${ubic.activo_2026}</p>` : ''}
+          ${url && url !== '—' && url !== 'no encontrado' ? `<p><strong class="text-fp-700">Website:</strong> <a href="${url.startsWith('http') ? url : 'https://' + url.replace(/^https?:\/\//, '')}" target="_blank" class="text-fp-500 hover:underline break-all">${url}</a></p>` : ''}
+        </div>
+        ${reputacion ? `<div class="mt-3 p-3 bg-fp-300/15 rounded text-xs text-fp-700"><strong>Posición/Reputación:</strong> ${reputacion}</div>` : ''}
+      </div>`;
+    }
+
+    // PERFIL DE COMPRA (schema nuevo)
+    const pc = research.perfil_compra;
+    if (pc && (pc.compra_geisha_actual || pc.lineup_actual_2026)) {
+      html += `<div class="drawer-section">
+        <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Perfil de compra</p>
+        <div class="space-y-1.5 text-xs">
+          ${pc.compra_geisha_actual ? `<p><strong class="text-fp-700">Compra Geisha:</strong> ${pc.compra_geisha_actual}</p>` : ''}
+          ${pc.anaerobicos_exoticos ? `<p><strong class="text-fp-700">Anaeróbicos/Exóticos:</strong> ${pc.anaerobicos_exoticos}</p>` : ''}
+          ${pc.procesos_preferidos?.length > 0 ? `<p><strong class="text-fp-700">Procesos:</strong> ${pc.procesos_preferidos.join(' · ')}</p>` : ''}
+          ${pc.microlotes_o_volumen ? `<p><strong class="text-fp-700">Modelo:</strong> ${pc.microlotes_o_volumen}</p>` : ''}
+          ${pc.lineup_actual_2026?.length > 0 ? `<div class="mt-2"><strong class="text-fp-700">Lineup 2026:</strong><ul class="mt-1 list-disc pl-4 space-y-0.5">${pc.lineup_actual_2026.map(l => `<li>${l}</li>`).join('')}</ul></div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    // POR QUÉ DEJARON DE COMPRAR FP (a recuperar)
+    const pq = research.por_que_dejaron_comprar_FP;
+    if (pq && (pq.proveedor_actual_panama || pq.justificacion)) {
+      html += `<div class="drawer-section bg-amber-50">
+        <p class="text-xs font-semibold uppercase mb-2" style="color:#92400e;">🔍 Por qué no compran a FP</p>
+        <div class="space-y-1.5 text-xs">
+          ${pq.proveedor_actual_panama ? `<p><strong class="text-amber-900">Proveedor Panamá actual:</strong> ${pq.proveedor_actual_panama}</p>` : ''}
+          ${pq.ultima_actividad_panama ? `<p><strong class="text-amber-900">Última actividad Panamá:</strong> ${pq.ultima_actividad_panama}</p>` : ''}
+          ${pq.cambio_estrategia ? `<p><strong class="text-amber-900">Cambio estrategia:</strong> ${pq.cambio_estrategia}</p>` : ''}
+          ${pq.probabilidad_reactivacion ? `<p><strong class="text-amber-900">Probabilidad reactivación:</strong> <span class="font-bold">${pq.probabilidad_reactivacion}</span></p>` : ''}
+          ${pq.justificacion ? `<p class="italic mt-2">${pq.justificacion}</p>` : ''}
+        </div>
+      </div>`;
+    }
+
+    // COMPETIDORES PANAMÁ
+    if (research.competidores_que_compran?.length > 0) {
+      html += `<div class="drawer-section">
+        <p class="text-xs font-semibold text-slate-500 uppercase mb-2">🏔️ Compite con (fincas Panamá)</p>
+        <div class="flex flex-wrap gap-1">${research.competidores_que_compran.map(c => `<span class="text-xs px-2 py-1 rounded bg-slate-100 text-slate-700">${c}</span>`).join('')}</div>
+      </div>`;
+    }
+
+    // FIT FP
+    if (research.fit_FP?.fortalezas) {
+      html += `<div class="drawer-section">
+        <p class="text-xs font-semibold text-slate-500 uppercase mb-2">💪 Fit con FP</p>
+        <p class="text-xs text-slate-700 mb-2">${research.fit_FP.fortalezas}</p>
+        ${research.fit_FP.categoria_FP_recomendada ? `<p class="text-xs"><strong class="text-fp-700">Categoría FP recomendada:</strong> ${research.fit_FP.categoria_FP_recomendada}</p>` : ''}
+      </div>`;
+    }
+
+    // POTENCIAL
+    if (research.potencial_2026 && (research.potencial_2026.capacidad_compra_estimada_usd || research.potencial_2026.justificacion_score)) {
+      html += `<div class="drawer-section bg-emerald-50">
+        <p class="text-xs font-semibold uppercase mb-2" style="color:#065f46;">🎯 Potencial 2026</p>
+        ${research.potencial_2026.capacidad_compra_estimada_usd ? `<p class="text-xs"><strong class="text-emerald-900">Capacidad estimada:</strong> ${research.potencial_2026.capacidad_compra_estimada_usd}</p>` : ''}
+        ${research.potencial_2026.justificacion_score ? `<p class="text-xs italic mt-2 text-emerald-900">${research.potencial_2026.justificacion_score}</p>` : ''}
+      </div>`;
+    }
+
+    // APPROACH COMERCIAL
+    const ac = research.approach_comercial;
+    if (ac && (ac.canal_recomendado || ac.notas_para_steven)) {
+      html += `<div class="drawer-section bg-blue-50">
+        <p class="text-xs font-semibold uppercase mb-2" style="color:#1e3a8a;">📞 Approach comercial</p>
+        <div class="space-y-1.5 text-xs">
+          ${ac.canal_recomendado ? `<p><strong class="text-blue-900">Canal:</strong> ${ac.canal_recomendado}</p>` : ''}
+          ${ac.contacto_clave ? `<p><strong class="text-blue-900">Contacto clave:</strong> ${ac.contacto_clave}</p>` : ''}
+          ${ac.momento_recomendado ? `<p><strong class="text-blue-900">Momento:</strong> ${ac.momento_recomendado}</p>` : ''}
+          ${ac.muestra_sugerida ? `<p><strong class="text-blue-900">Muestra sugerida:</strong> ${ac.muestra_sugerida}</p>` : ''}
+          ${ac.notas_para_steven ? `<div class="mt-2 p-2 bg-blue-100 rounded"><strong class="text-blue-900">📌 Para Steven:</strong> ${ac.notas_para_steven}</div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    // FUENTES
+    if (research.fuentes_principales?.length > 0) {
+      html += `<div class="drawer-section">
+        <p class="text-xs font-semibold text-slate-500 uppercase mb-2">📎 Fuentes research</p>
+        <div class="space-y-1">
+          ${research.fuentes_principales.filter(f => f.url).map(f => `<p class="text-xs"><span class="text-slate-500">${f.tipo}:</span> <a href="${f.url}" target="_blank" class="text-fp-500 hover:underline break-all">${f.url}</a></p>`).join('')}
+        </div>
+      </div>`;
+    }
   }
 
   // COMPRAS POR MARCA Y VARIEDAD (HOJA RUTA detail)
