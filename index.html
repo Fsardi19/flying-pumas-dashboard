@@ -1079,63 +1079,6 @@ function renderPlan() {
       <p class="text-sm" id="sens-insight-text">Calculando...</p>
     </div>
 
-    <script>
-      function recalcSensibilidad() {
-        const cajas = parseFloat(document.getElementById('cajas-slider').value);
-        const precio = parseFloat(document.getElementById('precio-slider').value);
-        const lb = cajas * 55.12;
-        const revenue = lb * precio;
-        const meta = 843184;
-        const px_req = meta / lb;
-
-        document.getElementById('cajas-val').textContent = cajas;
-        document.getElementById('precio-val').textContent = '$' + precio.toFixed(2);
-        document.getElementById('sens-cajas-display').textContent = cajas;
-        document.getElementById('sens-pxlb-required').textContent = '$' + px_req.toFixed(2);
-        document.getElementById('revenue-sim').textContent = '$' + Math.round(revenue).toLocaleString();
-        document.getElementById('lbs-sim').textContent = lb.toLocaleString() + ' lb';
-
-        const gap = revenue - meta;
-        document.getElementById('vs-meta').textContent = (gap >= 0 ? '+$' : '-$') + Math.abs(Math.round(gap)).toLocaleString() + (gap >= 0 ? ' (cumple ✓)' : ' (gap)');
-        document.getElementById('vs-meta').style.color = gap >= 0 ? '#07332f' : '#dc2626';
-
-        // Suma deals incluidos
-        let dealsSum = 0;
-        document.querySelectorAll('.deal-toggle:checked').forEach(cb => { dealsSum += parseFloat(cb.dataset.usd); });
-        document.getElementById('suma-incluidos').textContent = '$' + Math.round(dealsSum).toLocaleString();
-
-        const porCerrar = revenue - dealsSum;
-        document.getElementById('vs-oc').textContent = '$' + Math.round(porCerrar).toLocaleString() + ' por cerrar';
-
-        // Barra progress vs meta
-        const pct = Math.min(100, (revenue / meta) * 100);
-        document.getElementById('meta-bar').style.width = pct + '%';
-        document.getElementById('meta-bar').style.background = pct >= 100 ? '#07332f' : pct >= 85 ? '#84faa1' : pct >= 70 ? '#ffc836' : '#c3846f';
-        document.getElementById('meta-pct').textContent = pct.toFixed(1) + '% meta';
-
-        // Insight dinámico — concatenación (NO template literal por conflicto con scope outer)
-        var insight = '';
-        var ocPct = (dealsSum / meta) * 100;
-        var dealsCount = document.querySelectorAll('.deal-toggle:checked').length;
-        var revK = Math.round(revenue / 1000);
-        var pctTxt = pct.toFixed(0);
-        var precioTxt = precio.toFixed(2);
-        var pxReqTxt = px_req.toFixed(2);
-        if (cajas <= 330) {
-          if (precio >= 46) {
-            insight = 'Con ' + cajas + ' cajas a $' + precioTxt + '/lb llegamos a $' + revK + 'K = ' + pctTxt + '% de meta.';
-            if (dealsSum > 0) insight += ' OC firmadas (' + dealsCount + ' deals) cubren ' + ocPct.toFixed(0) + '% de meta. Por cerrar: $' + Math.round(porCerrar/1000) + 'K.';
-          } else {
-            insight = '🚨 Con ' + cajas + ' cajas a $' + precioTxt + '/lb solo llegamos a $' + revK + 'K = ' + pctTxt + '% meta. Necesitamos $' + pxReqTxt + '/lb (subir +$' + (px_req-precio).toFixed(2) + '/lb) o más cajas.';
-          }
-        } else {
-          insight = 'Con ' + cajas + ' cajas a $' + precioTxt + '/lb tenemos $' + revK + 'K (' + pctTxt + '% meta). Si confirmamos ' + cajas + ' cajas (vs 330 esperado Joel) podemos bajar precio a $' + pxReqTxt + '/lb manteniendo meta.';
-        }
-        document.getElementById('sens-insight-text').textContent = insight;
-      }
-      // Inicializar al cargar
-      setTimeout(recalcSensibilidad, 50);
-    </script>
   </div>
 
   <!-- SENSIBILIDAD MIX (existente con tooltip aclarando) -->
@@ -1583,6 +1526,67 @@ document.getElementById('search-input').addEventListener('input', e => {
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+// SENSIBILIDAD PIPELINE → META (calculadora interactiva)
+window.recalcSensibilidad = function() {
+  var cs = document.getElementById('cajas-slider');
+  if (!cs) return;
+  var cajas = parseFloat(cs.value);
+  var precio = parseFloat(document.getElementById('precio-slider').value);
+  var lb = cajas * 55.12;
+  var revenue = lb * precio;
+  var meta = 843184;
+  var px_req = meta / lb;
+
+  document.getElementById('cajas-val').textContent = cajas;
+  document.getElementById('precio-val').textContent = '$' + precio.toFixed(2);
+  document.getElementById('sens-cajas-display').textContent = cajas;
+  document.getElementById('sens-pxlb-required').textContent = '$' + px_req.toFixed(2);
+  document.getElementById('revenue-sim').textContent = '$' + Math.round(revenue).toLocaleString();
+  document.getElementById('lbs-sim').textContent = lb.toLocaleString() + ' lb';
+
+  var gap = revenue - meta;
+  var vsMeta = document.getElementById('vs-meta');
+  vsMeta.textContent = (gap >= 0 ? '+$' : '-$') + Math.abs(Math.round(gap)).toLocaleString() + (gap >= 0 ? ' (cumple)' : ' (gap)');
+  vsMeta.style.color = gap >= 0 ? '#07332f' : '#dc2626';
+
+  var dealsSum = 0;
+  document.querySelectorAll('.deal-toggle:checked').forEach(function(cb) { dealsSum += parseFloat(cb.dataset.usd); });
+  document.getElementById('suma-incluidos').textContent = '$' + Math.round(dealsSum).toLocaleString();
+  var porCerrar = revenue - dealsSum;
+  document.getElementById('vs-oc').textContent = '$' + Math.round(porCerrar).toLocaleString() + ' por cerrar';
+
+  var pct = Math.min(100, (revenue / meta) * 100);
+  var bar = document.getElementById('meta-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 100 ? '#07332f' : pct >= 85 ? '#84faa1' : pct >= 70 ? '#ffc836' : '#c3846f';
+  document.getElementById('meta-pct').textContent = pct.toFixed(1) + '% meta';
+
+  var insight = '';
+  var ocPct = (dealsSum / meta) * 100;
+  var dealsCount = document.querySelectorAll('.deal-toggle:checked').length;
+  var revK = Math.round(revenue / 1000);
+  if (cajas <= 330) {
+    if (precio >= 46) {
+      insight = 'Con ' + cajas + ' cajas a $' + precio.toFixed(2) + '/lb llegamos a $' + revK + 'K = ' + pct.toFixed(0) + '% de meta.';
+      if (dealsSum > 0) insight += ' OCs (' + dealsCount + ' deals) cubren ' + ocPct.toFixed(0) + '% de meta. Por cerrar: $' + Math.round(porCerrar/1000) + 'K.';
+    } else {
+      insight = 'ALERTA: Con ' + cajas + ' cajas a $' + precio.toFixed(2) + '/lb solo $' + revK + 'K (' + pct.toFixed(0) + '% meta). Necesitamos $' + px_req.toFixed(2) + '/lb (subir +$' + (px_req-precio).toFixed(2) + '/lb) o mas cajas.';
+    }
+  } else {
+    insight = 'Con ' + cajas + ' cajas a $' + precio.toFixed(2) + '/lb tenemos $' + revK + 'K (' + pct.toFixed(0) + '% meta). Si superamos 330 cajas (esperado Joel) precio puede bajar a $' + px_req.toFixed(2) + '/lb manteniendo meta.';
+  }
+  document.getElementById('sens-insight-text').textContent = insight;
+};
+
+// Auto-init recalc cuando aparece la calculadora (al cambiar a Plan tab)
+var sensObserver = new MutationObserver(function() {
+  if (document.getElementById('cajas-slider') && !document.getElementById('cajas-slider').dataset.init) {
+    document.getElementById('cajas-slider').dataset.init = '1';
+    window.recalcSensibilidad();
+  }
+});
+sensObserver.observe(document.getElementById('tab-content'), {childList: true, subtree: true});
 
 // INIT
 renderActiveTab();
