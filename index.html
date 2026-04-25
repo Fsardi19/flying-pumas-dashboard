@@ -1130,11 +1130,35 @@ function openDrawer(clientName) {
 
   // PERFIL (Research) — soporta schema viejo plano y nuevo anidado
   if (research) {
-    // ALERTA verificación pendiente
+    // ✅ CONFIRMACIÓN cliente FP verificado externamente
+    if (research._confirmacion) {
+      html += `<div class="drawer-section" style="background:linear-gradient(135deg,rgba(132,250,161,0.2),rgba(20,54,56,0.05)); border-left:4px solid #07332f;">
+        <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#07332f;">✅ Cliente FP confirmado</p>
+        <p class="text-xs text-slate-800">${research._confirmacion}</p>
+      </div>`;
+    }
+
+    // ⚠️ ALERTA verificación pendiente
     if (research._alerta_verificacion) {
       html += `<div class="drawer-section" style="background:linear-gradient(135deg,rgba(255,200,54,0.18),rgba(195,132,111,0.12)); border-left:4px solid #ffc836;">
         <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#6b4d00;">⚠️ Alerta de verificación</p>
         <p class="text-xs text-slate-800">${research._alerta_verificacion}</p>
+      </div>`;
+    }
+
+    // 🔴 HOLD KYC
+    if (research._status && research._status.includes('HOLD')) {
+      html += `<div class="drawer-section" style="background:rgba(220,38,38,0.08); border-left:4px solid #dc2626;">
+        <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#991b1b;">🔴 HOLD - KYC pendiente</p>
+        <p class="text-xs text-slate-800">${research._status}</p>
+      </div>`;
+    }
+
+    // 📈 Reasignación tier
+    if (research._reasignacion_tier) {
+      html += `<div class="drawer-section" style="background:rgba(171,199,209,0.12); border-left:4px solid #abc7d1;">
+        <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#143638;">📈 Tier reasignado</p>
+        <p class="text-xs text-slate-800">${research._reasignacion_tier}</p>
       </div>`;
     }
 
