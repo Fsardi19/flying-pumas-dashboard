@@ -156,7 +156,6 @@ tbody tr.client-row:hover { background: rgba(171,199,209,0.08); }
 </div>
 <script>
 (function(){
-  // SHA-256 hash — la contraseña real NO aparece en el código
   const EXPECTED = 'a2bead4d66a6448297bfba6a41e4d096f11234ad627ad8934a0d0296f3c60773';
   async function sha256(text){
     const data = new TextEncoder().encode(text);
@@ -170,10 +169,8 @@ tbody tr.client-row:hover { background: rgba(171,199,209,0.08); }
       sessionStorage.setItem('fp-auth','ok');
       document.getElementById('password-gate').style.display='none';
     } else {
-      const err = document.getElementById('pwd-error');
-      err.textContent = 'Contraseña incorrecta';
+      document.getElementById('pwd-error').textContent = 'Contraseña incorrecta';
       document.getElementById('pwd-input').value='';
-      // Anti-brute force: pequeño delay tras error
       document.getElementById('pwd-input').disabled = true;
       setTimeout(()=>{document.getElementById('pwd-input').disabled=false;document.getElementById('pwd-input').focus();}, 800);
     }
@@ -360,9 +357,20 @@ function renderResumen() {
                  : DATA.hoja_ruta.pipeline_2026.total;
   const oc_total = DATA.hoja_ruta.oc_firmadas_2026.total_valor;
   const top_deals = DATA.hoja_ruta.oc_firmadas_2026.deals.slice(0, 5);
+  // Cliente ancla — Black Gold T1
+  const black_gold = DATA.hoja_ruta.clientes.find(c => c.empresa === 'BLACK GOLD');
+  // Top oportunidades upsell — priorizando clientes con prueba de comportamiento (Tanda 2 research)
+  const upsell_priorizados = ['Ionoff', 'Strait Coffee Roasters', 'ROOTS BY EARTH', 'Amberson Coffee', 'Cafe Unido', 'BM Coffee Co', 'Feve', 'KIMA COFFEE'];
   const top_oportunidades = DATA.hoja_ruta.clientes
-    .filter(c => c.oc_valor_2026 === 0 && c.val_total_proy > 5000 && c.categoria_embudo && c.categoria_embudo.includes('Cliente') && c.tier !== 'T1')
-    .sort((a,b) => b.val_total_proy - a.val_total_proy).slice(0, 5);
+    .filter(c => c.oc_valor_2026 === 0 && c.val_total_proy > 0 && c.categoria_embudo && c.categoria_embudo.includes('Cliente') && c.tier !== 'T1')
+    .sort((a,b) => {
+      const aP = upsell_priorizados.findIndex(n => a.empresa.toUpperCase().includes(n.toUpperCase()));
+      const bP = upsell_priorizados.findIndex(n => b.empresa.toUpperCase().includes(n.toUpperCase()));
+      if (aP !== -1 && bP === -1) return -1;
+      if (aP === -1 && bP !== -1) return 1;
+      if (aP !== -1 && bP !== -1) return aP - bP;
+      return b.val_total_proy - a.val_total_proy;
+    }).slice(0, 6);
 
   return `
   <!-- INTRO -->
@@ -424,6 +432,109 @@ function renderResumen() {
       <p class="text-sm leading-relaxed">
         El refresh post-Hotelex Shanghai muestra <strong>${fmtK(DATA.hoja_ruta.oc_firmadas_2026.total_valor)} en ${DATA.hoja_ruta.oc_firmadas_2026.total_deals} deals firmados</strong> y <strong>${fmtK(DATA.hoja_ruta.pipeline_2026.total)} en pipeline nominado</strong>. La brecha de <strong>${fmt(DATA.plan_2026.budget_oficial_usd - DATA.hoja_ruta.pipeline_2026.total)} vs la meta presupuestal $843K</strong> corresponde a clientes T1/T2 nuevos esperados en SCAJ 2026 + visita finca Simon/Grand Cru abril + prospección Q2-Q3.
       </p>
+    </div>
+  </div>
+
+  <!-- CLIENTE ANCLA: BLACK GOLD -->
+  <div class="card mb-6 client-row" data-cliente="BLACK GOLD" style="border:2px solid #143638; background:linear-gradient(135deg,#143638,#1f3f41); color:white;">
+    <div class="flex items-start justify-between mb-3">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest" style="color:#ffc836;">⭐ Cliente Ancla T1 · Click para ver drawer</p>
+        <h3 class="serif text-3xl mt-1 text-white">BLACK GOLD</h3>
+        <p class="text-sm mt-1" style="color:#abc7d1;">Distribuidor exclusivo Asia · Taiwan · Único comprador de la edición exclusiva FP "Black Gold"</p>
+      </div>
+      <span class="text-xs px-3 py-1 rounded-full font-semibold" style="background:#ffc836;color:#143638;">45% del revenue 2025</span>
+    </div>
+    <div class="grid md:grid-cols-4 gap-3 mb-3">
+      <div style="background:rgba(255,200,54,0.1);padding:14px;border-radius:8px;">
+        <p class="text-xs uppercase font-semibold" style="color:#ffc836;">Real 2025</p>
+        <p class="serif text-2xl mt-1 text-white">${black_gold ? fmt(black_gold.val_total_2025) : '$225,921'}</p>
+      </div>
+      <div style="background:rgba(255,200,54,0.1);padding:14px;border-radius:8px;">
+        <p class="text-xs uppercase font-semibold" style="color:#ffc836;">Pipeline 2026</p>
+        <p class="serif text-2xl mt-1 text-white">${black_gold ? fmt(black_gold.val_total_proy) : '$212,500'}</p>
+      </div>
+      <div style="background:rgba(255,200,54,0.1);padding:14px;border-radius:8px;">
+        <p class="text-xs uppercase font-semibold" style="color:#ffc836;">Tier</p>
+        <p class="serif text-2xl mt-1 text-white">T1 VIP</p>
+      </div>
+      <div style="background:rgba(255,200,54,0.1);padding:14px;border-radius:8px;">
+        <p class="text-xs uppercase font-semibold" style="color:#ffc836;">OC firmada 2026</p>
+        <p class="serif text-2xl mt-1 text-white">Pendiente</p>
+        <p class="text-xs mt-1" style="color:#abc7d1;">Confirmaron cosecha 2026</p>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.08);padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.55;">
+      <strong style="color:#ffc836;">📌 Status post-Hotelex:</strong> Confirmaron recibo cosecha 2026 y mantienen relación firme post-escándalo Finca Sophia. Abren venta volumen geishas fin 2026 (similar venta CCD principio año). Visitan Colombia oct 2026. La menor cosecha Panamá los hace más reactivos a cerrar con productores confiables. <strong>Riesgo crítico:</strong> 1 cliente concentra 45% del revenue — diversificar es prioridad estratégica 2026.
+    </div>
+  </div>
+
+  <!-- DIAGNÓSTICO ESTRATÉGICO DEEP RESEARCH TANDA 2 -->
+  <div class="card mb-6" style="border-color:#84faa1; background:linear-gradient(135deg,rgba(132,250,161,0.05),rgba(171,199,209,0.05));">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-3xl">🔍</span>
+      <div>
+        <h3 class="card-header" style="margin-bottom:0">Diagnóstico Estratégico — Deep Research Tanda 2</h3>
+        <p class="text-xs text-slate-500">40 cuentas investigadas con web research · 24-abr-2026</p>
+      </div>
+    </div>
+    <div class="insight-dark mb-4" style="background:#07332f;">
+      <p class="label mb-2" style="color:#84faa1;">💡 Insight central</p>
+      <p class="text-sm leading-relaxed">El camino de cierre <strong>más corto NO es evangelizar nuevos compradores</strong> sobre Panamá — es <strong>aumentar share-of-wallet en cuentas con comportamiento ya validado</strong> de compra de Geisha/Panamá o exóticos cercanos.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#07332f;">🟢 Top 4 upsell con prueba pública</p>
+        <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+          <li><strong class="text-fp-700">Ionoff Roasting Co</strong> — ya tiene un lote de CCD en su tienda</li>
+          <li><strong class="text-fp-700">Strait Coffee Roasters</strong> — tenía lote FP visible 2026</li>
+          <li><strong class="text-fp-700">Roots by Earth</strong> — Panama Geisha como best seller en delivery</li>
+          <li><strong class="text-fp-700">Amberson Coffee</strong> — publica Panama Janson y Geishas alto perfil</li>
+        </ul>
+        <p class="text-xs text-slate-500 mt-2 italic">Acción: vender continuidad/upgrade de perfil, no la categoría desde cero</p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#07332f;">🟡 Segundo grupo upsell</p>
+        <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+          <li><strong class="text-fp-700">KIMA Coffee + Fève</strong> — hablan idioma exacto de FP/CCD (Geisha, Sidra, exóticos)</li>
+          <li><strong class="text-fp-700">BM Coffee Co</strong> — ADN competition/high specialty (pequeño pero serio)</li>
+          <li><strong class="text-fp-700">Café Unido</strong> — plataforma país + capacidad recurrente</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="insight-blue text-xs">
+        <strong>"A recuperar" — Diagnóstico real:</strong> NO dejaron de comprar Panamá, dejaron de comprar FP. Hoy compran a estates marquee:
+        <ul class="mt-2 space-y-1 list-disc pl-4">
+          <li><strong>Veneziano</strong> → Janson + Kotowa</li>
+          <li><strong>Bird Rock</strong> → Las Brujas + Esmeralda</li>
+          <li><strong>April Coffee</strong> → Esmeralda, Elida, Deborah</li>
+          <li><strong>Black & White</strong> → Finca Deborah + Esmeralda</li>
+          <li><strong>Axil</strong> → Deborah + Esmeralda (competencia)</li>
+          <li><strong>Friedhats</strong> → múltiples Panama Gesha</li>
+        </ul>
+      </div>
+      <div class="insight-gold text-xs">
+        <strong>🎯 Mejores reactivaciones realistas:</strong>
+        <ul class="mt-2 space-y-1 list-disc pl-4">
+          <li><strong>Ditta Artigianale</strong> — rota Panamá premium pero NO está atada a un solo proveedor</li>
+          <li><strong>Glitch Coffee</strong> — plataforma hiper-curada, rotación rápida</li>
+        </ul>
+        <p class="mt-2 italic">Approach: lote escaso + narrativa única de terroir/proceso (NO precio)</p>
+      </div>
+      <div class="insight-terracotta text-xs">
+        <strong>🆕 Leads nuevos viables:</strong>
+        <ul class="mt-2 space-y-1 list-disc pl-4">
+          <li><strong>MAME Roastery</strong> (Suiza) — vende Panama Geisha premium</li>
+          <li><strong>Monogram Coffee</strong> (Canadá) — credenciales campeonato</li>
+          <li><strong>Code Black</strong> (Australia) — categoría Gesha activa</li>
+          <li><strong>Sorellina Coffee</strong> — Geisha + procesos experimentales</li>
+        </ul>
+        <p class="mt-2 italic">Asia: <strong>MQ Coffee</strong> sí real; <strong>Park Byungchul</strong> = nodo influencia (no importer)</p>
+      </div>
+    </div>
+    <div class="mt-4 p-3 bg-slate-100 rounded-lg text-xs text-slate-700">
+      <strong>🧹 Limpiar/de-priorizar CRM:</strong> Tierras Altas (sin señales 2026) · Guangzhou PBEKAFEI (trader genérico, no specialty verificable) · Taste Coffee (necesita desambiguación razón social)
     </div>
   </div>
 
@@ -828,6 +939,9 @@ function renderPlan() {
   <div class="card mb-6">
     <h3 class="card-header">Modelo de revenue por categoría</h3>
     <p class="card-subtitle">Precios sugeridos $/lb por edición · base de negociación con clientes</p>
+    <div class="insight-gold mb-4 text-xs">
+      <strong>📌 Nomenclatura:</strong> "FP BlackGold — Geisha Iconic T1" se llama así porque es la <strong>edición exclusiva del cliente Black Gold</strong> (distribuidor Asia, único comprador). NO es una sub-marca de Flying Pumas.
+    </div>
     <div class="overflow-x-auto scroll-shadow">
     <table class="w-full">
       <thead><tr><th>Marca</th><th>Categoría</th><th class="text-right">Cajas</th><th class="text-right">Px lista</th><th class="text-right">Revenue</th><th class="text-right">%</th><th>Rango sugerido</th></tr></thead>
