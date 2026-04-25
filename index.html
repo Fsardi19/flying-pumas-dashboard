@@ -156,16 +156,26 @@ tbody tr.client-row:hover { background: rgba(171,199,209,0.08); }
 </div>
 <script>
 (function(){
-  const PWD_HASH = '5d0b6c1c7e8f4a2b'; // hash simple de "geisha2026"
-  function simpleHash(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return Math.abs(h).toString(16);}
-  function checkPwd(){
-    const v = document.getElementById('pwd-input').value;
-    if(simpleHash(v.toLowerCase()) === simpleHash('geisha2026')){
+  // SHA-256 hash — la contraseña real NO aparece en el código
+  const EXPECTED = 'a2bead4d66a6448297bfba6a41e4d096f11234ad627ad8934a0d0296f3c60773';
+  async function sha256(text){
+    const data = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  async function checkPwd(){
+    const v = document.getElementById('pwd-input').value.toLowerCase().trim();
+    const h = await sha256(v);
+    if(h === EXPECTED){
       sessionStorage.setItem('fp-auth','ok');
       document.getElementById('password-gate').style.display='none';
     } else {
-      document.getElementById('pwd-error').textContent = 'Contraseña incorrecta';
+      const err = document.getElementById('pwd-error');
+      err.textContent = 'Contraseña incorrecta';
       document.getElementById('pwd-input').value='';
+      // Anti-brute force: pequeño delay tras error
+      document.getElementById('pwd-input').disabled = true;
+      setTimeout(()=>{document.getElementById('pwd-input').disabled=false;document.getElementById('pwd-input').focus();}, 800);
     }
   }
   window.checkPwd = checkPwd;
