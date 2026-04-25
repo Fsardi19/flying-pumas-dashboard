@@ -770,35 +770,36 @@ function renderClientes() {
 
   <!-- TABLA PRINCIPAL CLIENTES -->
   <div class="card">
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
-      <div>
-        <h3 class="card-header">${clientesAMostrar.length} clientes ${mostrarTodos ? 'totales' : 'con actividad'} ${p === 'ambos' ? '' : '(' + p + ')'}</h3>
-        <p class="card-subtitle">${clientesActivos.length} con actividad · ${clientesPipeline.length} en pipeline · Click cualquier fila → drawer con research, CRM, compras por marca/variedad, contactos</p>
+    <!-- Header tabla: título + filtros en una sola línea pro -->
+    <div class="mb-4">
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <h3 class="card-header" style="margin-bottom:0">${clientesAMostrar.length} clientes ${mostrarTodos ? 'totales' : 'con actividad'} ${p === 'ambos' ? '' : '· ' + p}</h3>
+        <div class="flex items-center gap-1.5 flex-nowrap">
+          <button onclick="AppState.clientesFilters.soloActivos=!AppState.clientesFilters.soloActivos;renderActiveTab();" class="text-xs font-medium border rounded-lg px-3 py-1.5 whitespace-nowrap ${AppState.clientesFilters.soloActivos ? 'bg-fp-700 text-white border-fp-700' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'}" title="Toggle entre todos los ${clientes.length} vs solo activos">
+            ${AppState.clientesFilters.soloActivos ? '✓ Solo activos' : '👁 Todos'}
+          </button>
+          <select onchange="AppState.clientesFilters.tier=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white whitespace-nowrap">
+            <option value="">Tier ▾</option>
+            <option value="T1" ${AppState.clientesFilters.tier==='T1'?'selected':''}>T1</option>
+            <option value="T2" ${AppState.clientesFilters.tier==='T2'?'selected':''}>T2</option>
+            <option value="T3" ${AppState.clientesFilters.tier==='T3'?'selected':''}>T3</option>
+            <option value="T4" ${AppState.clientesFilters.tier==='T4'?'selected':''}>T4</option>
+          </select>
+          <select onchange="AppState.clientesFilters.embudo=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white whitespace-nowrap">
+            <option value="">Embudo ▾</option>
+            <option value="Cliente" ${AppState.clientesFilters.embudo==='Cliente'?'selected':''}>Cliente</option>
+            <option value="LEAD" ${AppState.clientesFilters.embudo==='LEAD'?'selected':''}>Lead</option>
+            <option value="Prospecto" ${AppState.clientesFilters.embudo==='Prospecto'?'selected':''}>Prospecto</option>
+            <option value="nuevo" ${AppState.clientesFilters.embudo==='nuevo'?'selected':''}>Nuevo</option>
+            <option value="RECUPERAR" ${AppState.clientesFilters.embudo==='RECUPERAR'?'selected':''}>Recuperar</option>
+          </select>
+          <select onchange="AppState.clientesFilters.region=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white whitespace-nowrap">
+            <option value="">Región ▾</option>
+            ${regiones.map(r => `<option value="${r}" ${AppState.clientesFilters.region===r?'selected':''}>${r}</option>`).join('')}
+          </select>
+        </div>
       </div>
-      <div class="flex flex-wrap gap-2 mt-2 md:mt-0">
-        <button onclick="AppState.clientesFilters.soloActivos=!AppState.clientesFilters.soloActivos;renderActiveTab();" class="text-xs border rounded-lg px-3 py-1.5 ${AppState.clientesFilters.soloActivos ? 'bg-fp-700 text-white border-fp-700' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'}" title="Toggle entre todos los 177 clientes vs solo los ${clientesActivos.length} con actividad">
-          ${AppState.clientesFilters.soloActivos ? '✓ Solo activos' : '👁 Mostrar todos'}
-        </button>
-        <select onchange="AppState.clientesFilters.tier=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 bg-white">
-          <option value="">Todos los Tier</option>
-          <option value="T1" ${AppState.clientesFilters.tier==='T1'?'selected':''}>T1</option>
-          <option value="T2" ${AppState.clientesFilters.tier==='T2'?'selected':''}>T2</option>
-          <option value="T3" ${AppState.clientesFilters.tier==='T3'?'selected':''}>T3</option>
-          <option value="T4" ${AppState.clientesFilters.tier==='T4'?'selected':''}>T4</option>
-        </select>
-        <select onchange="AppState.clientesFilters.embudo=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 bg-white">
-          <option value="">Todo el embudo</option>
-          <option value="Cliente" ${AppState.clientesFilters.embudo==='Cliente'?'selected':''}>Cliente activo</option>
-          <option value="LEAD" ${AppState.clientesFilters.embudo==='LEAD'?'selected':''}>Lead</option>
-          <option value="Prospecto" ${AppState.clientesFilters.embudo==='Prospecto'?'selected':''}>Prospecto</option>
-          <option value="nuevo" ${AppState.clientesFilters.embudo==='nuevo'?'selected':''}>Nuevo cliente</option>
-          <option value="RECUPERAR" ${AppState.clientesFilters.embudo==='RECUPERAR'?'selected':''}>A recuperar</option>
-        </select>
-        <select onchange="AppState.clientesFilters.region=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 bg-white">
-          <option value="">Todas las regiones</option>
-          ${regiones.map(r => `<option value="${r}" ${AppState.clientesFilters.region===r?'selected':''}>${r}</option>`).join('')}
-        </select>
-      </div>
+      <p class="card-subtitle mt-2" style="margin-bottom:0">${clientesActivos.length} con actividad · ${clientesPipeline.length} en pipeline · Click cualquier fila → drawer con research, CRM y compras por marca/variedad</p>
     </div>
     <div class="overflow-x-auto scroll-shadow" style="max-height:720px;">
     <table class="w-full">
