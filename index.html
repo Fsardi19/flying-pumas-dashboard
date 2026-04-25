@@ -697,14 +697,17 @@ function renderClientes() {
   // Solo mostrar con actividad
   const clientesActivos = clientes.filter(c => c.val_total_2025 > 0 || c.val_total_proy > 0 || c.oc_valor_2026 > 0);
   const clientesPipeline = clientes.filter(c => !(c.val_total_2025 > 0 || c.val_total_proy > 0 || c.oc_valor_2026 > 0));
+  // Por default mostrar TODOS; toggle "soloActivos" filtra
+  const mostrarTodos = !AppState.clientesFilters.soloActivos;
+  const clientesAMostrar = mostrarTodos ? clientes : clientesActivos;
 
   const total_real = clientes.reduce((s, c) => s + (p === 'FP' ? c.val_2025_fp_geisha + c.val_2025_fp_var : p === 'CCD' ? c.val_2025_ccd_geisha + c.val_2025_ccd_var : c.val_total_2025), 0);
   const total_proy = clientes.reduce((s, c) => s + (p === 'FP' ? c.val_proy2025_fp_geisha + c.val_proy2025_fp_var : p === 'CCD' ? c.val_proy2025_ccd_geisha + c.val_proy2025_ccd_var : c.val_total_proy), 0);
   const total_oc = clientes.reduce((s, c) => s + c.oc_valor_2026, 0);
 
-  // Tabla unificada
+  // Tabla unificada — TODOS por default, toggle filtra
   let rows = '';
-  clientesActivos.sort((a,b) => (b.val_total_proy + b.oc_valor_2026 + b.val_total_2025) - (a.val_total_proy + a.oc_valor_2026 + a.val_total_2025)).forEach(c => {
+  clientesAMostrar.sort((a,b) => (b.val_total_proy + b.oc_valor_2026 + b.val_total_2025) - (a.val_total_proy + a.oc_valor_2026 + a.val_total_2025)).forEach(c => {
     const realShown = p === 'FP' ? c.val_2025_fp_geisha + c.val_2025_fp_var : p === 'CCD' ? c.val_2025_ccd_geisha + c.val_2025_ccd_var : c.val_total_2025;
     const proyShown = p === 'FP' ? c.val_proy2025_fp_geisha + c.val_proy2025_fp_var : p === 'CCD' ? c.val_proy2025_ccd_geisha + c.val_proy2025_ccd_var : c.val_total_proy;
     const ocBadge = c.oc_valor_2026 > 0 ? '<span class="badge-oc">OC</span>' : '';
@@ -769,10 +772,13 @@ function renderClientes() {
   <div class="card">
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
       <div>
-        <h3 class="card-header">${clientesActivos.length} clientes con actividad ${p === 'ambos' ? '' : '(' + p + ')'}</h3>
-        <p class="card-subtitle">Click cualquier fila → drawer con research, CRM, compras por marca/variedad, contactos</p>
+        <h3 class="card-header">${clientesAMostrar.length} clientes ${mostrarTodos ? 'totales' : 'con actividad'} ${p === 'ambos' ? '' : '(' + p + ')'}</h3>
+        <p class="card-subtitle">${clientesActivos.length} con actividad · ${clientesPipeline.length} en pipeline · Click cualquier fila → drawer con research, CRM, compras por marca/variedad, contactos</p>
       </div>
       <div class="flex flex-wrap gap-2 mt-2 md:mt-0">
+        <button onclick="AppState.clientesFilters.soloActivos=!AppState.clientesFilters.soloActivos;renderActiveTab();" class="text-xs border rounded-lg px-3 py-1.5 ${AppState.clientesFilters.soloActivos ? 'bg-fp-700 text-white border-fp-700' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'}" title="Toggle entre todos los 177 clientes vs solo los ${clientesActivos.length} con actividad">
+          ${AppState.clientesFilters.soloActivos ? '✓ Solo activos' : '👁 Mostrar todos'}
+        </button>
         <select onchange="AppState.clientesFilters.tier=this.value;renderActiveTab();" class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 bg-white">
           <option value="">Todos los Tier</option>
           <option value="T1" ${AppState.clientesFilters.tier==='T1'?'selected':''}>T1</option>
